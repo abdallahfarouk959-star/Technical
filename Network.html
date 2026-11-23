@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Computer Network Technology Quiz</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #17191c;
+  --muted: #5f6672;
+  --line: #d9dce1;
+  --fill: #f4f5f7;
+  --ok: #14753d;
+  --ok-bg: #e8f5ed;
+  --bad: #b42318;
+  --bad-bg: #fcebe9;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131416;
+    --fg: #ececee;
+    --muted: #9aa0a9;
+    --line: #2d3036;
+    --fill: #1b1d21;
+    --ok: #58c27d;
+    --ok-bg: #15281d;
+    --bad: #f0837a;
+    --bad-bg: #2c1a18;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 680px; margin: 0 auto; padding: 28px 20px 72px; }
+
+h1 { margin: 0; font-size: 1.25rem; font-weight: 650; }
+header p { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+button, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+.toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+select {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 0.9rem;
+}
+.seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button {
+  padding: 8px 16px;
+  border: 0;
+  background: transparent;
+  font-size: 0.9rem;
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.bar { height: 3px; margin-top: 6px; background: var(--line); }
+#fill { height: 100%; width: 0; background: var(--fg); }
+
+.summary {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.summary p { margin: 0; }
+.summary .big { font-size: 1.4rem; font-weight: 650; }
+.summary .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.note { margin: 20px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+#card { margin-top: 24px; }
+.cap { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 4px; color: var(--muted); font-size: 0.85rem; }
+.q { margin: 0; font-size: 1.2rem; font-weight: 600; line-height: 1.4; }
+
+pre {
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--fill);
+  font: 0.875rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  tab-size: 4;
+}
+pre code { font: inherit; }
+
+.opts { margin-top: 16px; }
+.opt {
+  display: grid;
+  grid-template-columns: 1.25rem 1fr;
+  gap: 12px;
+  align-items: start;
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+}
+.opt:hover { border-color: var(--muted); }
+.key {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 2px;
+  border: 1.5px solid var(--muted);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.opt.multi .key { border-radius: 4px; }
+.txt { white-space: pre-wrap; }
+.tag { display: block; margin-top: 2px; color: var(--muted); font-size: 0.8rem; }
+
+.opt.picked { border-color: var(--fg); }
+.opt.picked .key { background: var(--fg); border-color: var(--fg); box-shadow: inset 0 0 0 3px var(--bg); }
+.locked .opt { cursor: default; }
+.locked .opt:hover { border-color: var(--line); }
+.locked .opt.picked { border-color: var(--line); }
+.locked .opt.picked .key { background: transparent; border-color: var(--muted); box-shadow: none; }
+.opt.right, .locked .opt.right { border-color: var(--ok); background: var(--ok-bg); }
+.opt.right .key, .locked .opt.right .key { background: var(--ok); border-color: var(--ok); color: var(--bg); }
+.opt.wrong, .locked .opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.opt.wrong .key, .locked .opt.wrong .key { background: var(--bad); border-color: var(--bad); color: var(--bg); }
+
+.why {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--line);
+  background: var(--fill);
+}
+.why.ok { border-left-color: var(--ok); }
+.why.bad { border-left-color: var(--bad); }
+.why p { margin: 0; }
+.why .verdict { font-weight: 600; }
+.why p + p { margin-top: 4px; }
+
+.nav { display: flex; justify-content: space-between; gap: 8px; margin-top: 24px; }
+.nav .right-group { display: flex; gap: 8px; }
+.btn {
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.btn:hover:not(:disabled) { border-color: var(--fg); }
+.btn.primary { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.btn:disabled { opacity: 0.4; cursor: default; }
+
+details { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); }
+summary { cursor: pointer; color: var(--muted); font-size: 0.9rem; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  gap: 6px;
+  margin-top: 12px;
+}
+.grid button {
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  font-size: 0.8rem;
+}
+.grid button.answered { background: var(--fill); border-color: var(--muted); }
+.grid button.right { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.grid button.wrong { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.grid button.current { border-color: var(--fg); box-shadow: 0 0 0 1px var(--fg); font-weight: 700; }
+
+footer { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 16px; }
+.link {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link:hover:not(:disabled) { color: var(--fg); }
+.link:disabled { opacity: 0.4; cursor: default; text-decoration: none; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+@media (max-width: 520px) {
+  main { padding: 20px 16px 56px; }
+  .q { font-size: 1.1rem; }
+  .opt { padding: 10px 12px; gap: 10px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Computer Network Technology Quiz</h1>
+    <p>Midterm Revision (Lectures 1–8) · Introduction, Chapter 1 & Chapter 2</p>
+  </header>
+
+  <div class="toolbar">
+    <select id="topic" aria-label="Topic"></select>
+    <div class="seg" role="group" aria-label="Mode">
+      <button type="button" id="m-practice" title="Shows the answer after each question">Practice</button>
+      <button type="button" id="m-exam" title="Graded when you finish">Exam</button>
+    </div>
+  </div>
+
+  <div id="summary"></div>
+
+  <div class="status"><span id="pos"></span><span id="score"></span></div>
+  <div class="bar"><div id="fill"></div></div>
+
+  <section id="card"></section>
+  <div class="nav" id="nav"></div>
+  <p class="sr" id="sr" aria-live="polite"></p>
+
+  <details>
+    <summary>All questions</summary>
+    <div class="grid" id="grid"></div>
+  </details>
+
+  <footer>
+    <button type="button" class="link" id="f-missed">Missed only</button>
+    <button type="button" class="link" id="f-shuffle">Shuffle</button>
+    <button type="button" class="link" id="f-key">Answer key</button>
+    <button type="button" class="link" id="f-reset">Reset</button>
+  </footer>
+</main>
+
+<script>
+const Q = [
+  {"id": "L1-01", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ is a set of computers sharing resources located on or provided by network nodes.", "code": "", "opts": ["A. Computer network", "B. Network protocol", "C. Operating system", "D. Packet switch"], "ans": [0], "multi": false, "why": "A computer network is a collection of interconnected computers and devices that communicate using common protocols and share resources.", "added": false},
+  {"id": "L1-02", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ on each computer is one of the hardware components of a computer network.", "code": "", "opts": ["A. Network Interface Card (NIC)", "B. Content provider server", "C. Domain Name System", "D. Routing table"], "ans": [0], "multi": false, "why": "The five basic components of a computer network are two or more computers, cables as links, a Network Interface Card (NIC) on each computer, switches, and operating system (OS) software.", "added": false},
+  {"id": "L1-03", "category": "Lec 1–2: Network Basics & Topologies", "q": "Software called __________ is one of the essential components of a computer network.", "code": "", "opts": ["A. Operating system (OS)", "B. Coaxial cable", "C. Repeater", "D. DSLAM"], "ans": [0], "multi": false, "why": "Operating system (OS) software is listed as one of the core components of a computer network alongside computers, cables, NICs, and switches.", "added": false},
+  {"id": "L1-04", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ is a device or computer program that provides functions or services for clients.", "code": "", "opts": ["A. Server", "B. Client", "C. Repeater", "D. Drop line"], "ans": [0], "multi": false, "why": "A server is a device or program that responds to client requests with services such as files, databases, and web pages.", "added": false},
+  {"id": "L1-05", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ is any computer hardware or software device that requests access to a service provided by a server.", "code": "", "opts": ["A. Client", "B. Server", "C. Router", "D. Switch"], "ans": [0], "multi": false, "why": "A client (such as a desktop, laptop, smartphone, or web browser) requests services provided by a server.", "added": false},
+  {"id": "L1-06", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: A client is a computer program or device that provides a service to another computer program and its user.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. That is the definition of a server; a client is the side that requests services from a server.", "added": false},
+  {"id": "L1-07", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: In the client-server model, a client is the side which initiates the communication.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. In client-server communication, the client initiates contact with the always-on server, which waits to be contacted.", "added": false},
+  {"id": "L1-08", "category": "Lec 1–2: Network Basics & Topologies", "q": "__________ is a network device whose responsibility is to connect network devices within the same LAN.", "code": "", "opts": ["A. Switch", "B. Router", "C. Firewall", "D. Modem"], "ans": [0], "multi": false, "why": "A switch connects network devices together within the same local area network (LAN).", "added": false},
+  {"id": "L1-09", "category": "Lec 1–2: Network Basics & Topologies", "q": "Which of the following devices forwards packets between different networks by processing the routing information included in the packet?", "code": "", "opts": ["A. Firewall", "B. Bridge", "C. Hub", "D. Router"], "ans": [3], "multi": false, "why": "A router operates at the network layer to connect networks and direct packets toward their destination.", "added": false},
+  {"id": "L1-10", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: A switch is a device which directs packets or data between networks to their destination.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Directing packets between networks to their destination is the role of a router, whereas a switch connects devices within the same LAN.", "added": false},
+  {"id": "L1-11", "category": "Lec 1–2: Network Basics & Topologies", "q": "What is a HUB?", "code": "", "opts": ["A. Software", "B. Computing device", "C. Network device", "D. Calculating device"], "ans": [2], "multi": false, "why": "A hub is a physical-layer network device used to connect multiple devices in a network (such as a star topology).", "added": false},
+  {"id": "L1-12", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ network connection is a dedicated way of connecting exactly two nodes through a common medium.", "code": "", "opts": ["A. Point-to-point", "B. Multipoint", "C. Broadcast", "D. Mesh"], "ans": [0], "multi": false, "why": "A point-to-point connection provides a dedicated link between exactly two devices.", "added": false},
+  {"id": "L1-13", "category": "Lec 1–2: Network Basics & Topologies", "q": "When you change TV channels using an infrared remote control, you are establishing a __________ connection.", "code": "", "opts": ["A. Point-to-point", "B. Multipoint", "C. Ring", "D. Mesh"], "ans": [0], "multi": false, "why": "Changing TV channels with an infrared remote establishes a point-to-point connection between the remote control and the television's control system.", "added": false},
+  {"id": "L1-14", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: In a point-to-point connection, a shared link is provided among multiple devices.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. A point-to-point connection uses a dedicated link between two devices; a shared link among three or more devices is a multipoint connection.", "added": false},
+  {"id": "L1-15", "category": "Lec 1–2: Network Basics & Topologies", "q": "Three or more devices share a single link in a __________ connection.", "code": "", "opts": ["A. Unipoint", "B. Multipoint", "C. Point-to-point", "D. Simplex"], "ans": [1], "multi": false, "why": "In a multipoint (multidrop) connection, more than two specific devices share a single communication link.", "added": false},
+  {"id": "L1-16", "category": "Lec 1–2: Network Basics & Topologies", "q": "In the __________ mode of communication, only one node can send data.", "code": "", "opts": ["A. Simplex mode", "B. Half-duplex", "C. Full-duplex", "D. Multipoint"], "ans": [0], "multi": false, "why": "In simplex mode, communication is unidirectional—only one of the two devices on a link can transmit, and the other can only receive.", "added": false},
+  {"id": "L1-17", "category": "Lec 1–2: Network Basics & Topologies", "q": "What type of transmission mode is involved in communication between a keyboard and a computer?", "code": "", "opts": ["A. Half-duplex", "B. Full-duplex", "C. Simplex", "D. Automatic"], "ans": [2], "multi": false, "why": "A keyboard only sends input to the computer and never receives data back, making it a classic example of simplex communication.", "added": false},
+  {"id": "L1-18", "category": "Lec 1–2: Network Basics & Topologies", "q": "In __________, both devices (nodes) can send data, but only one at a time.", "code": "", "opts": ["A. Simplex mode", "B. Half-duplex", "C. Full-duplex", "D. Point-to-point"], "ans": [1], "multi": false, "why": "In half-duplex mode, each station can both transmit and receive, but not at the same time.", "added": false},
+  {"id": "L1-19", "category": "Lec 1–2: Network Basics & Topologies", "q": "In __________, both devices can send and receive data at the same time.", "code": "", "opts": ["A. Simplex mode", "B. Half-duplex", "C. Full-duplex", "D. Unidirectional mode"], "ans": [2], "multi": false, "why": "In full-duplex mode, both stations can transmit and receive simultaneously.", "added": false},
+  {"id": "L1-20", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: In full-duplex mode, both devices (nodes) can send data, but one at a time.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Sending one at a time describes half-duplex; in full-duplex, both devices can send data simultaneously.", "added": false},
+  {"id": "L1-21", "category": "Lec 1–2: Network Basics & Topologies", "q": "The physical or logical arrangement of a network is called __________.", "code": "", "opts": ["A. Topology", "B. Routing", "C. Networking", "D. Control"], "ans": [0], "multi": false, "why": "Network topology refers to the way in which a network is laid out physically or logically.", "added": false},
+  {"id": "L1-22", "category": "Lec 1–2: Network Basics & Topologies", "q": "Identify which of the following is NOT a network topology.", "code": "", "opts": ["A. Bus", "B. Star", "C. P2P", "D. Ring"], "ans": [2], "multi": false, "why": "Bus, Star, and Ring are network topologies, whereas P2P (Peer-to-Peer) is a network architecture/model.", "added": false},
+  {"id": "L1-23", "category": "Lec 1–2: Network Basics & Topologies", "q": "A fully connected __________ topology has n(n − 1) / 2 physical channels to link its devices.", "code": "", "opts": ["A. Mesh", "B. Star", "C. Ring", "D. Bus"], "ans": [0], "multi": false, "why": "In a fully connected mesh topology with n nodes, each node connects to every other node, requiring n(n - 1) / 2 physical links.", "added": false},
+  {"id": "L1-24", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: If there are 5 computers connected as a fully connected mesh network, the number of physical links is 15.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Using n(n - 1) / 2 with n = 5 gives 5 × 4 / 2 = 10 links, not 15.", "added": false},
+  {"id": "L1-25", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: If there are 4 computers connected as a fully connected mesh network, the number of physical channels is 16.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Using n(n - 1) / 2 with n = 4 gives 4 × 3 / 2 = 6 physical channels, not 16.", "added": false},
+  {"id": "L1-26", "category": "Lec 1–2: Network Basics & Topologies", "q": "Which of the following topology arrangements uses a point-to-point line configuration?", "code": "", "opts": ["A. Mesh", "B. Star", "C. Ring", "D. All of them"], "ans": [3], "multi": false, "why": "Mesh, Star, and Ring topologies all rely on point-to-point links between connected devices (whereas Bus is multipoint).", "added": false},
+  {"id": "L1-27", "category": "Lec 1–2: Network Basics & Topologies", "q": "The arrangement where all data pass through a central controller (hub or switch) is known as __________.", "code": "", "opts": ["A. Ring Topology", "B. Mesh Topology", "C. Star Topology", "D. Bus Topology"], "ans": [2], "multi": false, "why": "In a star topology, every device has a dedicated point-to-point link only to a central controller, usually a hub or switch.", "added": false},
+  {"id": "L1-28", "category": "Lec 1–2: Network Basics & Topologies", "q": "In __________ topology, if one link fails, only that link is affected (robustness), and it is less expensive than mesh.", "code": "", "opts": ["A. Star", "B. Bus", "C. Ring", "D. Tree"], "ans": [0], "multi": false, "why": "Star topology provides link-level robustness—if a single drop link fails, only that node is disconnected while the rest of the network continues operating.", "added": false},
+  {"id": "L1-29", "category": "Lec 1–2: Network Basics & Topologies", "q": "True or False: One of the problems with a star topology network is a single point of failure—if the central controller fails, the entire network goes down.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Because all traffic passes through the central controller (hub/switch), its failure disables the whole star network.", "added": false},
+  {"id": "L1-30", "category": "Lec 1–2: Network Basics & Topologies", "q": "In __________ topology, one long multipoint cable acts as a backbone to link all the devices in the network.", "code": "", "opts": ["A. Bus", "B. Star", "C. Ring", "D. Mesh"], "ans": [0], "multi": false, "why": "A bus topology is a multipoint configuration in which a single backbone cable links all nodes.", "added": false},
+  {"id": "L1-31", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ is a connection that runs between the device and the main cable in a bus topology.", "code": "", "opts": ["A. Drop line", "B. Tap", "C. Repeater", "D. Gateway"], "ans": [0], "multi": false, "why": "In a bus topology, nodes connect to the main backbone cable via drop lines and taps; the drop line is the cable running from the device to the main cable.", "added": false},
+  {"id": "L1-32", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ is a connector that splices into the main backbone cable in a bus topology.", "code": "", "opts": ["A. Tap", "B. Drop line", "C. Socket", "D. Switch"], "ans": [0], "multi": false, "why": "A tap is a connector that splices into the main cable (or punctures its sheathing) to create contact with the metallic core.", "added": false},
+  {"id": "L1-33", "category": "Lec 1–2: Network Basics & Topologies", "q": "In __________ topology, a fault or break in the backbone cable stops all transmission, even between devices on the same side of the problem.", "code": "", "opts": ["A. Bus", "B. Star", "C. Mesh", "D. Hybrid"], "ans": [0], "multi": false, "why": "A break in a bus backbone cable disrupts signal termination and reflects signals back, halting all network transmission.", "added": false},
+  {"id": "L1-34", "category": "Lec 1–2: Network Basics & Topologies", "q": "In __________ topology, a signal is passed in one direction, and addition or deletion of a device requires moving only two connections.", "code": "", "opts": ["A. Ring", "B. Mesh", "C. Star", "D. Bus"], "ans": [0], "multi": false, "why": "In a ring topology, each device connects only to its two immediate neighbors in a closed loop, so adding or removing a node only changes two links.", "added": false},
+  {"id": "L1-35", "category": "Lec 1–2: Network Basics & Topologies", "q": "In a ring topology, each device incorporates a __________ that regenerates the bits and passes them along.", "code": "", "opts": ["A. Repeater", "B. Router", "C. Firewall", "D. Splitter"], "ans": [0], "multi": false, "why": "Each node in a ring includes a repeater; when it receives a signal meant for another node, its repeater regenerates the bits and forwards them.", "added": false},
+  {"id": "L1-36", "category": "Lec 1–2: Network Basics & Topologies", "q": "A __________ topology resembles a tree: one central node (the 'trunk'), and each node is connected to it through a single path.", "code": "", "opts": ["A. Tree", "B. Ring", "C. Mesh", "D. Bus"], "ans": [0], "multi": false, "why": "A tree topology branches out hierarchically from a central root/trunk node with a single path to each connected node.", "added": false},
+  {"id": "L1-37", "category": "Lec 1–2: Network Basics & Topologies", "q": "__________ combines several topologies as sub-networks linked together in a larger topology.", "code": "", "opts": ["A. Hybrid topology", "B. Ring topology", "C. Simplex topology", "D. Point-to-point topology"], "ans": [0], "multi": false, "why": "A hybrid topology integrates two or more different topologies (such as a bus sub-network and a ring sub-network connected via a star backbone).", "added": false},
+  {"id": "L1-38", "category": "Lec 1–2: Network Basics & Topologies", "q": "__________ provides data transmission among devices such as computers, smartphones, tablets, and personal digital assistants.", "code": "", "opts": ["A. PAN (Personal Area Network)", "B. LAN (Local Area Network)", "C. WAN (Wide Area Network)", "D. IXP (Internet Exchange Point)"], "ans": [0], "multi": false, "why": "A Personal Area Network (PAN) connects personal devices within an individual's immediate workspace.", "added": false},
+  {"id": "L1-39", "category": "Lec 1–2: Network Basics & Topologies", "q": "Bluetooth is an example of a __________.", "code": "", "opts": ["A. Personal Area Network (PAN)", "B. Local Area Network (LAN)", "C. Virtual Private Network (VPN)", "D. Wide Area Network (WAN)"], "ans": [0], "multi": false, "why": "Bluetooth is a short-range wireless technology commonly used to connect personal devices in a PAN.", "added": false},
+  {"id": "L1-40", "category": "Lec 1–2: Network Basics & Topologies", "q": "In a PAN, one master device takes up the role of a __________ for connecting to a higher-level network and the Internet.", "code": "", "opts": ["A. Gateway", "B. Repeater", "C. Tap", "D. Splitter"], "ans": [0], "multi": false, "why": "In a PAN, a master device can act as a gateway to bridge the personal devices to a higher-level network and the Internet.", "added": false},
+  {"id": "L1-41", "category": "Lec 1–2: Network Basics & Topologies", "q": "__________ is a computer network that interconnects computers within a limited area such as a residence, school, laboratory, university campus, or office building.", "code": "", "opts": ["A. LAN (Local Area Network)", "B. PAN (Personal Area Network)", "C. WAN (Wide Area Network)", "D. Tier-1 ISP"], "ans": [0], "multi": false, "why": "A Local Area Network (LAN) spans a single building, home, office, or campus.", "added": false},
+  {"id": "L1-42", "category": "Lec 1–2: Network Basics & Topologies", "q": "__________ is an IT infrastructure allowing two or more computer systems to connect and share resources without requiring a separate server or server software.", "code": "", "opts": ["A. Peer-to-Peer (P2P)", "B. Client-Server Network", "C. Circuit Switching", "D. HFC Access"], "ans": [0], "multi": false, "why": "In a Peer-to-Peer (P2P) network, connected computers act as equal peers and share resources directly without a dedicated central server.", "added": false},
+  {"id": "L1-43", "category": "Lec 1–2: Network Basics & Topologies", "q": "In a __________ network, a client helps end users access the web, and a server responds to the clients with services such as files, databases, and web pages.", "code": "", "opts": ["A. Client-server", "B. Peer-to-peer", "C. Simplex", "D. Ring"], "ans": [0], "multi": false, "why": "A client-server network separates roles between service-requesting clients and service-providing servers.", "added": false},
+
+  {"id": "C1A-01", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ (also called end systems) are billions of connected computing devices running network apps at the Internet's 'edge'.", "code": "", "opts": ["A. Hosts", "B. Packet switches", "C. Repeaters", "D. DSLAMs"], "ans": [0], "multi": false, "why": "Hosts (or end systems) sit at the edge of the Internet and run user applications.", "added": false},
+  {"id": "C1A-02", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ forward packets (chunks of data) across the network, such as routers and link-layer switches.", "code": "", "opts": ["A. Packet switches", "B. End systems", "C. Network protocols", "D. Sockets"], "ans": [0], "multi": false, "why": "Packet switches (routers and switches) receive packets arriving on incoming links and forward them onto outgoing links.", "added": false},
+  {"id": "C1A-03", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "Fiber, copper, radio, and satellite are examples of __________, whose transmission rate is called bandwidth.", "code": "", "opts": ["A. Communication links", "B. End systems", "C. Routing algorithms", "D. Application protocols"], "ans": [0], "multi": false, "why": "Communication links are the physical media connecting nodes, each characterized by its transmission rate (bandwidth).", "added": false},
+  {"id": "C1A-04", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "The __________ is a 'network of networks' composed of interconnected ISPs.", "code": "", "opts": ["A. Internet", "B. PAN", "C. Bus topology", "D. DSLAM"], "ans": [0], "multi": false, "why": "The Internet interconnects millions of access, regional, and Tier-1 ISPs into a global network of networks.", "added": false},
+  {"id": "C1A-05", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "Which connection is necessary for a computer to join the Internet?", "code": "", "opts": ["A. Internet Society", "B. Internet Architecture Board", "C. Another standalone computer", "D. Internet Service Provider (ISP)"], "ans": [3], "multi": false, "why": "End systems connect to the Internet through an access Internet Service Provider (ISP).", "added": false},
+  {"id": "C1A-06", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In Internet standards, RFC stands for __________.", "code": "", "opts": ["A. Request for Comments", "B. Routing Flow Control", "C. Remote File Connection", "D. Regional Fiber Channel"], "ans": [0], "multi": false, "why": "Internet standards documents developed by the IETF are called Requests for Comments (RFCs).", "added": false},
+  {"id": "C1A-07", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In Internet standards, IETF stands for __________.", "code": "", "opts": ["A. Internet Engineering Task Force", "B. International Ethernet Transfer Federation", "C. Internet Exchange Transmission Facility", "D. Internal Encryption Technical Forum"], "ans": [0], "multi": false, "why": "The Internet Engineering Task Force (IETF) develops and publishes Internet standards in RFCs.", "added": false},
+  {"id": "C1A-08", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "From the 'service' view, the Internet is an __________ that provides services to distributed applications.", "code": "", "opts": ["A. Infrastructure", "B. Operating system", "C. Optical repeater", "D. Access point"], "ans": [0], "multi": false, "why": "From a service perspective, the Internet is an infrastructure providing a programming interface (hooks) to distributed applications.", "added": false},
+  {"id": "C1A-09", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ define the format and order of messages sent and received among network entities, and the actions taken on message transmission and receipt.", "code": "", "opts": ["A. Network protocols", "B. Guided media", "C. Buffers", "D. Topologies"], "ans": [0], "multi": false, "why": "A protocol governs all communication activity by specifying message format, ordering, and actions upon sending/receiving.", "added": false},
+  {"id": "C1A-10", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "The structure or format of data in a protocol message is called __________.", "code": "", "opts": ["A. Syntax", "B. Semantics", "C. Timing", "D. Throughput"], "ans": [0], "multi": false, "why": "Syntax refers to the structure or format of the data (how fields are laid out), whereas semantics refers to the meaning of each section of bits.", "added": false},
+  {"id": "C1A-11", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "True or False: Hosts (clients and servers) are considered part of the network edge.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. The network edge comprises end systems (hosts), including clients and data-center servers.", "added": false},
+  {"id": "C1A-12", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "Which of the following is NOT a network edge device?", "code": "", "opts": ["A. Switch", "B. PC", "C. Smartphone", "D. Server"], "ans": [0], "multi": false, "why": "PCs, smartphones, and servers are end systems (hosts) at the network edge, whereas a switch is a packet-switching device.", "added": false},
+  {"id": "C1A-13", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ are wired or wireless communication links that connect end systems to the edge router.", "code": "", "opts": ["A. Access networks", "B. Network cores", "C. Tier-1 ISPs", "D. Sockets"], "ans": [0], "multi": false, "why": "Access networks physically link end systems to the first router (edge router) on a path to any other distant end system.", "added": false},
+  {"id": "C1A-14", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "True or False: The network core consists of interconnected routers forming a mesh of networks.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. The network core is the mesh of packet switches and links that interconnects the Internet's end systems.", "added": false},
+  {"id": "C1A-15", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ is the multiplexing technique that transmits different channels in different carrier frequency bands.", "code": "", "opts": ["A. Frequency Division Multiplexing (FDM)", "B. Time Division Multiplexing (TDM)", "C. Store-and-forward switching", "D. Packet encapsulation"], "ans": [0], "multi": false, "why": "In FDM, the frequency spectrum of a link is divided into distinct frequency bands, each carrying a separate channel.", "added": false},
+  {"id": "C1A-16", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In cable-based Internet access, HFC stands for __________.", "code": "", "opts": ["A. Hybrid Fiber Coax", "B. High Frequency Cable", "C. Host Forwarding Channel", "D. Home Fiber Connection"], "ans": [0], "multi": false, "why": "HFC stands for Hybrid Fiber Coax, combining fiber-optic cables to neighborhood junctions with coaxial cables to individual homes.", "added": false},
+  {"id": "C1A-17", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "Cable-based Internet access is __________, meaning the downstream transmission rate is much higher than the upstream rate.", "code": "", "opts": ["A. Asymmetric", "B. Symmetric", "C. Simplex", "D. Dedicated"], "ans": [0], "multi": false, "why": "HFC cable access is asymmetric (e.g., 40 Mbps–1.2 Gbps downstream vs. 30–100 Mbps upstream).", "added": false},
+  {"id": "C1A-18", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "True or False: In cable-based networks, data and TV are transmitted at different frequencies over a shared link between homes and the cable headend.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Cable-based access uses FDM over a shared coax/fiber distribution network.", "added": false},
+  {"id": "C1A-19", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ uses existing telephone lines to connect to a central office DSLAM, transmitting voice and data at different frequencies.", "code": "", "opts": ["A. Digital Subscriber Line (DSL)", "B. Cable-based access (HFC)", "C. Terrestrial microwave", "D. Ethernet LAN"], "ans": [0], "multi": false, "why": "DSL multiplexes voice and high-speed upstream/downstream data onto different frequency bands over a subscriber's existing twisted-pair phone line.", "added": false},
+  {"id": "C1A-20", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "True or False: There is a dedicated link between the subscriber and the central office in DSL.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Unlike cable-based access (which is shared), each DSL subscriber has a dedicated twisted-pair telephone line to the central office DSLAM.", "added": false},
+  {"id": "C1A-21", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In DSL access networks, DSLAM stands for __________.", "code": "", "opts": ["A. DSL Access Multiplexer", "B. Digital Signal Link Amplifier", "C. Data Switching Line Adapter", "D. Direct Subscriber Local Modem"], "ans": [0], "multi": false, "why": "DSLAM stands for DSL Access Multiplexer, located at the telco's central office.", "added": false},
+  {"id": "C1A-22", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "According to the midterm revision bank, the function of a DSLAM at the central office is to __________.", "code": "", "opts": ["A. Convert analog signals into digital signals", "B. Convert digital signals into analog signals", "C. Amplify optical light pulses", "D. Assign public IP addresses"], "ans": [0], "multi": false, "why": "At the central office, the DSLAM converts the analog DSL signals arriving over the telephone line into digital format for the ISP network.", "added": false},
+  {"id": "C1A-23", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In cable-based access networks, CMTS stands for __________.", "code": "", "opts": ["A. Cable Modem Termination System", "B. Central Multiplexing Transmission Switch", "C. Coaxial Media Transfer Server", "D. Channel Modulation Terminal Station"], "ans": [0], "multi": false, "why": "CMTS stands for Cable Modem Termination System, which serves a role at the cable headend similar to the DSLAM in DSL.", "added": false},
+  {"id": "C1A-24", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "Home Internet access is commonly provided by __________.", "code": "", "opts": ["A. DSL", "B. FTTP (Fiber to the Premises)", "C. Cable", "D. All of the mentioned"], "ans": [3], "multi": false, "why": "Residential broadband Internet access is provided using DSL, Cable (HFC), or FTTP.", "added": false},
+  {"id": "C1A-25", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "A shared wireless access network connects an end system to a router via a base station, also known as an __________.", "code": "", "opts": ["A. Access point", "B. DSLAM", "C. Tap", "D. Repeater"], "ans": [0], "multi": false, "why": "Wireless end systems connect to the wired network through a base station, commonly called a wireless access point (AP).", "added": false},
+  {"id": "C1A-26", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ are wireless LANs typically within or around a building (~100 ft), such as IEEE 802.11 WiFi.", "code": "", "opts": ["A. WLANs", "B. Wide-area cellular networks", "C. HFC networks", "D. Tier-1 backbones"], "ans": [0], "multi": false, "why": "Wireless LANs (WLANs) based on IEEE 802.11 (WiFi) cover short distances (~100 ft) within or around a building.", "added": false},
+  {"id": "C1A-27", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ are provided by mobile cellular network operators over tens of kilometers (e.g., 4G/5G).", "code": "", "opts": ["A. Wide-area cellular access networks", "B. Personal Area Networks (PANs)", "C. Twisted-pair Ethernet LANs", "D. Cable headend networks"], "ans": [0], "multi": false, "why": "Wide-area cellular access networks (such as 4G and 5G) provide wireless access over ranges of tens of kilometers via cellular base stations.", "added": false},
+  {"id": "C1A-28", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ networks are used in companies and universities, combining wired Ethernet and wireless link technologies connecting switches and routers.", "code": "", "opts": ["A. Enterprise", "B. Residential DSL", "C. Personal Area", "D. Satellite"], "ans": [0], "multi": false, "why": "Enterprise networks (in businesses and universities) mix wired Ethernet switches and wireless WiFi access points connected to institutional routers.", "added": false},
+  {"id": "C1A-29", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "A sending host takes an application message and breaks it into smaller chunks of length L bits known as __________.", "code": "", "opts": ["A. Packets", "B. Circuits", "C. Frequency bands", "D. Sockets"], "ans": [0], "multi": false, "why": "In packet-switched networks, hosts divide application messages into smaller chunks called packets of length L bits.", "added": false},
+  {"id": "C1A-30", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "The rate R (in bits/sec) at which bits are pushed into a link is called __________, also known as link capacity.", "code": "", "opts": ["A. Link transmission rate (link bandwidth)", "B. Propagation speed", "C. Traffic intensity", "D. Queuing delay"], "ans": [0], "multi": false, "why": "Link transmission rate (R), also referred to as link capacity or link bandwidth, measures how many bits per second can be transmitted onto the link.", "added": false},
+  {"id": "C1A-31", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "A __________ is the physical path over which a message travels between transmitter and receiver.", "code": "", "opts": ["A. Physical link (Medium)", "B. Protocol", "C. Socket", "D. Port"], "ans": [0], "multi": false, "why": "The physical link (transmission medium) is what lies physically between transmitter and receiver pairs.", "added": false},
+  {"id": "C1A-32", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In __________, signals propagate in solid media such as copper, fiber, or coaxial cable.", "code": "", "opts": ["A. Guided media", "B. Unguided media", "C. Wireless radio", "D. Satellite links"], "ans": [0], "multi": false, "why": "Guided media confine waves inside a solid physical medium such as twisted-pair copper, coaxial cable, or fiber-optic cable.", "added": false},
+  {"id": "C1A-33", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In __________, signals propagate freely in the electromagnetic spectrum with no physical wire, such as radio.", "code": "", "opts": ["A. Unguided media", "B. Guided media", "C. Coaxial cable", "D. Twisted pair"], "ans": [0], "multi": false, "why": "Unguided media (wireless radio) carry signals through the atmosphere or outer space without a physical conductor.", "added": false},
+  {"id": "C1A-34", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ consists of two insulated copper wires, such as Category 5 and Category 6 Ethernet cables.", "code": "", "opts": ["A. Twisted pair (TP)", "B. Coaxial cable", "C. Fiber-optic cable", "D. Terrestrial microwave"], "ans": [0], "multi": false, "why": "Twisted pair (TP) consists of two insulated copper wires twisted together to reduce electromagnetic interference (e.g., Cat 5 and Cat 6).", "added": false},
+  {"id": "C1A-35", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "What is the maximum cable length for a standard Shielded/Unshielded Twisted Pair Ethernet segment?", "code": "", "opts": ["A. 100 ft", "B. 200 ft", "C. 100 m", "D. 200 m"], "ans": [2], "multi": false, "why": "Standard twisted-pair Ethernet cables have a maximum segment length of 100 meters.", "added": false},
+  {"id": "C1A-36", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ consists of two concentric copper conductors and supports bidirectional broadband transmission.", "code": "", "opts": ["A. Coaxial cable", "B. Twisted pair (TP)", "C. Fiber-optic cable", "D. Satellite radio"], "ans": [0], "multi": false, "why": "Coaxial cable has an inner copper conductor surrounded by insulation and an outer concentric cylindrical conductor.", "added": false},
+  {"id": "C1A-37", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "__________ is made of glass fiber carrying light pulses (each pulse a bit), offering high speed and immunity to electromagnetic noise.", "code": "", "opts": ["A. Fiber-optic cable", "B. Coaxial cable", "C. Twisted pair (TP)", "D. Unguided radio"], "ans": [0], "multi": false, "why": "Fiber-optic cables transmit pulses of light through thin glass fibers, enabling high data rates, low attenuation, and immunity to electromagnetic interference.", "added": false},
+  {"id": "C1A-38", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "In the midterm revision bank, what is listed as the maximum data transfer rate for optical fiber cable?", "code": "", "opts": ["A. 10 Mbps", "B. 100 Mbps", "C. 1000 Mbps", "D. 10000 Mbps"], "ans": [3], "multi": false, "why": "Among the given choices (10, 100, 1000, 10000 Mbps), optical fiber supports 10000 Mbps (10 Gbps and beyond).", "added": false},
+  {"id": "C1A-39", "category": "Ch. 1 (Lec 3–6): Internet, Access & Physical Media", "q": "A __________ radio link provides up to 45 Mbps per channel and experiences roughly 270 msec end-to-end propagation delay.", "code": "", "opts": ["A. Satellite", "B. WiFi (802.11)", "C. Fiber-optic", "D. Twisted pair"], "ans": [0], "multi": false, "why": "Geostationary satellite links operate at up to 45 Mbps per channel with an end-to-end propagation delay of about 270 msec.", "added": false},
+
+  {"id": "C1B-01", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "In __________, hosts break application-layer messages into packets that are forwarded from router to router at full link capacity.", "code": "", "opts": ["A. Packet switching", "B. Circuit switching", "C. Frequency Division Multiplexing", "D. Time Division Multiplexing"], "ans": [0], "multi": false, "why": "Packet switching divides messages into packets and transmits each packet across links at the full link transmission rate.", "added": false},
+  {"id": "C1B-02", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ transmission means the entire packet must arrive at a router before it can be transmitted on the next link.", "code": "", "opts": ["A. Store-and-forward", "B. Circuit-switched", "C. Cut-through", "D. Point-to-point"], "ans": [0], "multi": false, "why": "Most packet switches use store-and-forward transmission, requiring the complete packet to arrive before beginning transmission onto the outbound link.", "added": false},
+  {"id": "C1B-03", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ happens when the arrival rate (in bps) to a link exceeds the transmission rate (bps) of the link for a period of time.", "code": "", "opts": ["A. Packet queuing", "B. Circuit reservation", "C. Settlement-free peering", "D. Encapsulation"], "ans": [0], "multi": false, "why": "When packets arrive faster than the output link can transmit them, packets accumulate in the router's output buffer (packet queuing).", "added": false},
+  {"id": "C1B-04", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "A __________ is a temporary storage area in a router with finite capacity where packets wait before transmission.", "code": "", "opts": ["A. Buffer (Queue)", "B. Socket", "C. Tap", "D. Protocol"], "ans": [0], "multi": false, "why": "Each output link in a router has an output buffer (queue) that temporarily holds packets waiting to be transmitted.", "added": false},
+  {"id": "C1B-05", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ happens when a packet arrives at a full router queue/buffer and is dropped.", "code": "", "opts": ["A. Packet loss", "B. Nodal processing", "C. Propagation delay", "D. Peering"], "ans": [0], "multi": false, "why": "Because router buffers have finite capacity, an arriving packet finding a full buffer will be dropped (packet loss).", "added": false},
+  {"id": "C1B-06", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ is a local router action that moves arriving packets from a router's input link to the appropriate output link.", "code": "", "opts": ["A. Forwarding", "B. Routing", "C. Multiplexing", "D. Sniffing"], "ans": [0], "multi": false, "why": "Forwarding is the local per-router function of transferring an incoming packet to the proper outgoing interface using the local forwarding table.", "added": false},
+  {"id": "C1B-07", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ is a global action that determines the source-to-destination paths taken by packets across the network.", "code": "", "opts": ["A. Routing", "B. Forwarding", "C. Store-and-forward", "D. Encapsulation"], "ans": [0], "multi": false, "why": "Routing refers to the network-wide process (using routing algorithms) that determines end-to-end paths from sources to destinations.", "added": false},
+  {"id": "C1B-08", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "In __________, end-to-end resources are allocated and reserved for the duration of a 'call' between source and destination.", "code": "", "opts": ["A. Circuit switching", "B. Packet switching", "C. Peer-to-peer networking", "D. HTTP"], "ans": [0], "multi": false, "why": "Circuit switching reserves dedicated end-to-end link bandwidth and switch resources for the entire communication session.", "added": false},
+  {"id": "C1B-09", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "In __________ networks, there exist idle dedicated resources that cannot be used by other ongoing communications.", "code": "", "opts": ["A. Circuit switching", "B. Packet switching", "C. Wireless LAN", "D. Peer-to-peer"], "ans": [0], "multi": false, "why": "In circuit-switched networks, reserved circuit capacity remains idle and unshared even during silent periods when the call isn't sending data.", "added": false},
+  {"id": "C1B-10", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "True or False: Circuit-switched networks are commonly used in traditional telephone networks.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Traditional telephone networks establish a dedicated end-to-end circuit for the duration of each phone call.", "added": false},
+  {"id": "C1B-11", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "True or False: Packet-switched networks are more efficient than circuit-switched networks for sharing bandwidth among bursty data users.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Packet switching shares link capacity dynamically on demand without idle reserved circuits, supporting far more bursty users.", "added": false},
+  {"id": "C1B-12", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "True or False: Circuit-switched networks are suitable for real-time applications requiring guaranteed bandwidth.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Circuit switching provides dedicated, guaranteed constant bandwidth and delay, making it well-suited for real-time voice/audio calls.", "added": false},
+  {"id": "C1B-13", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "In __________, time is divided into periodic slots, and each call transmits at maximum bandwidth only during its allocated time slot(s).", "code": "", "opts": ["A. Time Division Multiplexing (TDM)", "B. Frequency Division Multiplexing (FDM)", "C. Store-and-forward switching", "D. Packet queuing"], "ans": [0], "multi": false, "why": "TDM divides time into frames of fixed slots and assigns one periodic slot per frame to each connection.", "added": false},
+  {"id": "C1B-14", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "Hosts connect to the Internet via residential or enterprise __________.", "code": "", "opts": ["A. Access ISPs", "B. Tier-1 ISPs", "C. Internet Exchange Points", "D. Content provider networks"], "ans": [0], "multi": false, "why": "End systems connect first to access ISPs (residential, university, or company ISPs).", "added": false},
+  {"id": "C1B-15", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "A __________ connects local access ISPs to higher-tier global transit ISPs.", "code": "", "opts": ["A. Regional ISP", "B. PAN gateway", "C. DSLAM", "D. Loopback interface"], "ans": [0], "multi": false, "why": "Regional ISPs aggregate traffic from multiple access ISPs and connect them to Tier-1 global transit ISPs.", "added": false},
+  {"id": "C1B-16", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "A __________ (such as Google or Akamai) is a private network that connects its data centers to the Internet, often bypassing Tier-1 and regional ISPs.", "code": "", "opts": ["A. Content provider network", "B. Internet Exchange Point (IXP)", "C. Regional ISP", "D. Circuit-switched backbone"], "ans": [0], "multi": false, "why": "Large content providers build private global networks to bring content close to users and peer directly with lower-tier ISPs.", "added": false},
+  {"id": "C1B-17", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ ISPs are global transit ISPs at the top of the Internet hierarchy that do not pay anyone (e.g., Level 3, AT&T, Sprint, NTT).", "code": "", "opts": ["A. Tier-1", "B. Access", "C. Regional", "D. Content-provider"], "ans": [0], "multi": false, "why": "Tier-1 ISPs sit at the top of the Internet hierarchy, peer settlement-free with one another, and pay no transit fees.", "added": false},
+  {"id": "C1B-18", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "By __________ with each other directly, two ISPs at the same hierarchy level can reduce payments to their provider ISPs.", "code": "", "opts": ["A. Peering", "B. Spoofing", "C. Sniffing", "D. Multiplexing"], "ans": [0], "multi": false, "why": "Peering allows two nearby ISPs at the same tier to exchange traffic directly without routing it through an upstream paid provider.", "added": false},
+  {"id": "C1B-19", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "When two ISPs peer directly, it is typically __________, meaning neither ISP pays the other.", "code": "", "opts": ["A. Settlement-free", "B. Asymmetric", "C. Connection-oriented", "D. Elastic"], "ans": [0], "multi": false, "why": "Peering agreements are usually settlement-free because both ISPs benefit mutually from reduced transit costs.", "added": false},
+  {"id": "C1B-20", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "An __________ is a meeting point (typically in a standalone building with its own switches) where multiple ISPs can connect and/or peer together.", "code": "", "opts": ["A. Internet Exchange Point (IXP)", "B. Access Point (AP)", "C. Operating System (OS)", "D. Application Socket"], "ans": [0], "multi": false, "why": "An Internet Exchange Point (IXP) is a physical switching facility where multiple ISPs interconnect and peer.", "added": false},
+  {"id": "C1B-21", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "The total nodal delay (d_nodal) at a router is given by __________.", "code": "", "opts": ["A. d_proc + d_queue + d_trans + d_prop", "B. d_proc - d_queue + d_trans + d_prop", "C. d_proc + d_trans - d_queue", "D. d_proc + d_queue - d_trans - d_prop"], "ans": [0], "multi": false, "why": "Total nodal delay is the sum of nodal processing delay, queuing delay, transmission delay, and propagation delay.", "added": false},
+  {"id": "C1B-22", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "The time required by a router to check bit errors and examine a packet's header to determine where to direct it is __________.", "code": "", "opts": ["A. Processing delay", "B. Queuing delay", "C. Transmission delay", "D. Propagation delay"], "ans": [0], "multi": false, "why": "Nodal processing delay (d_proc) includes checking for bit-level errors and looking up the output link in the forwarding table.", "added": false},
+  {"id": "C1B-23", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ is the time a packet spends waiting at the output link for transmission, depending on router congestion.", "code": "", "opts": ["A. Queuing delay", "B. Propagation delay", "C. Transmission delay", "D. Processing delay"], "ans": [0], "multi": false, "why": "Queuing delay (d_queue) is the time a packet waits in the output buffer behind previously queued packets.", "added": false},
+  {"id": "C1B-24", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "The amount of time required to push (transmit) all of a packet's bits into the link (L / R) is __________.", "code": "", "opts": ["A. Transmission delay", "B. Propagation delay", "C. Queuing delay", "D. Processing delay"], "ans": [0], "multi": false, "why": "Transmission delay is d_trans = L / R, where L is packet length in bits and R is link transmission rate in bps.", "added": false},
+  {"id": "C1B-25", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "Transmission delay (d_trans = L / R) does NOT depend on __________.", "code": "", "opts": ["A. Packet length", "B. Distance between the routers", "C. Transmission rate", "D. Bandwidth of the medium"], "ans": [1], "multi": false, "why": "Transmission delay depends only on packet length (L) and link transmission rate/bandwidth (R); physical distance affects propagation delay instead.", "added": false},
+  {"id": "C1B-26", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "True or False: Transmission delay increases when the packet length increases.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Since d_trans = L / R, increasing packet length L directly increases transmission delay.", "added": false},
+  {"id": "C1B-27", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ is the time needed for a signal to travel from one end of a physical link of length d to the other at speed s (d / s).", "code": "", "opts": ["A. Propagation delay", "B. Transmission delay", "C. Queuing delay", "D. Processing delay"], "ans": [0], "multi": false, "why": "Propagation delay is d_prop = d / s, determined by link length d and physical propagation speed s.", "added": false},
+  {"id": "C1B-28", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "True or False: Propagation delay is variable and depends on the congestion level of the router.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Queuing delay varies with router congestion; propagation delay (d / s) is fixed for a given physical link.", "added": false},
+  {"id": "C1B-29", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "True or False: Both propagation delay and transmission delay increase when the packet length increases.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Only transmission delay (L / R) increases with packet length; propagation delay (d / s) is independent of packet size.", "added": false},
+  {"id": "C1B-30", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "For a 10 Mbps Ethernet link, if the length of the packet is 32 bits, what is the transmission delay (in microseconds)?", "code": "", "opts": ["A. 3.2", "B. 32", "C. 0.32", "D. 320"], "ans": [0], "multi": false, "why": "d_trans = L / R = 32 bits / (10 × 10^6 bps) = 3.2 × 10^-6 s = 3.2 microseconds.", "added": false},
+  {"id": "C1B-31", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "How long does it take a packet of length 1,000 bytes to be transmitted and propagate over a link of distance 2,500 km, propagation speed 2.5 × 10^8 m/s, and transmission rate 2 Mbps?", "code": "", "opts": ["A. 14 msec", "B. 200 msec", "C. 250 msec", "D. 100 msec"], "ans": [0], "multi": false, "why": "d_prop = (2500 × 10^3 m) / (2.5 × 10^8 m/s) = 0.01 s = 10 ms. d_trans = (1000 × 8 bits) / (2 × 10^6 bps) = 0.004 s = 4 ms. Total = 10 ms + 4 ms = 14 msec.", "added": false},
+  {"id": "C1B-32", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ is given by L·a / R, where L is packet length, a is average packet arrival rate, and R is link bandwidth.", "code": "", "opts": ["A. Traffic intensity", "B. Propagation speed", "C. Bottleneck throughput", "D. Round Trip Time"], "ans": [0], "multi": false, "why": "Traffic intensity (La / R) measures the ratio of arriving bits/sec to link capacity; as La / R approaches 1, average queuing delay grows rapidly.", "added": false},
+  {"id": "C1B-33", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "The __________ program provides delay measurements from source to each router along an end-to-end Internet path towards a destination.", "code": "", "opts": ["A. Traceroute", "B. Wireshark", "C. Telnet", "D. DSLAM"], "ans": [0], "multi": false, "why": "Traceroute sends three probe packets with increasing TTL values (1, 2, 3, ...) to measure round-trip delays to each router along the path.", "added": false},
+  {"id": "C1B-34", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ is the rate (bits/time unit) at which bits are being transferred from sender to receiver.", "code": "", "opts": ["A. Throughput", "B. Propagation delay", "C. Traffic intensity", "D. Latency"], "ans": [0], "multi": false, "why": "Throughput measures the effective bit rate at which a receiver receives data from a sender.", "added": false},
+  {"id": "C1B-35", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "__________ throughput is the rate at a given point in time, whereas average throughput is the rate over a longer period of time.", "code": "", "opts": ["A. Instantaneous", "B. Asymmetric", "C. Elastic", "D. Persistent"], "ans": [0], "multi": false, "why": "Instantaneous throughput is the rate at a specific instant, while average throughput is total file bits F divided by total transfer time T.", "added": false},
+  {"id": "C1B-36", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "The link on an end-to-end path that constrains the end-to-end throughput is called the __________.", "code": "", "opts": ["A. Bottleneck link", "B. Drop line", "C. Peering link", "D. Backbone tap"], "ans": [0], "multi": false, "why": "End-to-end throughput cannot exceed the transmission rate of the slowest link along the path, known as the bottleneck link.", "added": false},
+  {"id": "C1B-37", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "If Host A wants to send a large file to Host B and the path has three links of rates R1 = 500 kbps, R2 = 2 Mbps, and R3 = 1 Mbps, what is the throughput?", "code": "", "opts": ["A. 1 Mbps", "B. 500 kbps", "C. 2 Mbps", "D. 3.5 Mbps"], "ans": [1], "multi": false, "why": "Throughput is min(R1, R2, R3) = min(500 kbps, 2000 kbps, 1000 kbps) = 500 kbps.", "added": false},
+  {"id": "C1B-38", "category": "Ch. 1 (Lec 3–6): Network Core, Delay & Throughput", "q": "In the transfer of a file between server and client, if the transmission rates along the path are 10 Mbps, 20 Mbps, 30 Mbps, and 40 Mbps, what is the throughput?", "code": "", "opts": ["A. 20 Mbps", "B. 10 Mbps", "C. 40 Mbps", "D. 50 Mbps"], "ans": [1], "multi": false, "why": "The bottleneck link is the slowest link on the path, which is 10 Mbps.", "added": false},
+
+  {"id": "C1C-01", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ is the field studying how bad guys can attack computer networks and how we can defend networks against attacks.", "code": "", "opts": ["A. Network security", "B. Modularization", "C. Circuit switching", "D. Multiplexing"], "ans": [0], "multi": false, "why": "Network security studies attack vectors, defense mechanisms, and how to design attack-resistant network architectures.", "added": false},
+  {"id": "C1C-02", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "A __________ is a self-replicating infection caused by receiving and executing an object (e.g., an e-mail attachment).", "code": "", "opts": ["A. Virus", "B. Worm", "C. Firewall", "D. Cookie"], "ans": [0], "multi": false, "why": "A virus requires explicit user action (such as opening/executing an infected attachment) to infect a host and replicate.", "added": false},
+  {"id": "C1C-03", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "A __________ is a self-replicating infection caused by passively receiving an object that gets itself executed.", "code": "", "opts": ["A. Worm", "B. Virus", "C. Spyware", "D. Sniffer"], "ans": [0], "multi": false, "why": "Unlike a virus, a worm spreads autonomously without user intervention by exploiting vulnerabilities upon passive receipt.", "added": false},
+  {"id": "C1C-04", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ is malware that can record keystrokes and the websites visited by the victim and upload the information to a collection site.", "code": "", "opts": ["A. Spyware", "B. Packet sniffer", "C. Traceroute", "D. Repeater"], "ans": [0], "multi": false, "why": "Spyware covertly monitors user activity such as keystrokes and browsing history and exfiltrates that data.", "added": false},
+  {"id": "C1C-05", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "An infected host can be enrolled in a __________, a network of compromised hosts used for spam or distributed denial-of-service (DDoS) attacks.", "code": "", "opts": ["A. Botnet", "B. Subnet", "C. Peer-to-peer LAN", "D. Virtual circuit"], "ans": [0], "multi": false, "why": "Attackers control thousands of compromised machines (a botnet) to launch coordinated spam campaigns or DDoS floods.", "added": false},
+  {"id": "C1C-06", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "In a __________ attack, attackers make resources (server, bandwidth) unavailable to legitimate traffic by overwhelming the resource with bogus traffic.", "code": "", "opts": ["A. Denial of Service (DoS)", "B. IP spoofing", "C. Packet sniffing", "D. Port scanning"], "ans": [0], "multi": false, "why": "Denial of Service (DoS) and Distributed DoS (DDoS) flood a target server or link with bogus traffic so legitimate users cannot access it.", "added": false},
+  {"id": "C1C-07", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ means having a promiscuous network interface that reads/records all packets passing by and intercepts traffic.", "code": "", "opts": ["A. Packet sniffing", "B. IP spoofing", "C. Store-and-forward", "D. Routing"], "ans": [0], "multi": false, "why": "On shared broadcast media (such as Ethernet or WiFi), a promiscuous NIC captures all passing frames in a packet-sniffing attack.", "added": false},
+  {"id": "C1C-08", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ is a free packet-sniffer software tool used to capture and inspect packets.", "code": "", "opts": ["A. Wireshark", "B. Traceroute", "C. Apache", "D. Firefox"], "ans": [0], "multi": false, "why": "Wireshark is a widely used, free packet-sniffer program for capturing and analyzing network traffic.", "added": false},
+  {"id": "C1C-09", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ means sending a packet with a false source IP address.", "code": "", "opts": ["A. IP spoofing", "B. Packet sniffing", "C. Encapsulation", "D. Peering"], "ans": [0], "multi": false, "why": "IP spoofing injects packets with a forged source address, pretending to come from another host.", "added": false},
+  {"id": "C1C-10", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ architecture refers to the organization of the communication process into layers (e.g., the five-layer Internet architecture).", "code": "", "opts": ["A. Network", "B. Application", "C. Physical", "D. Client-server"], "ans": [0], "multi": false, "why": "Network architecture organizes complex communication protocols and hardware/software functions into a structured stack of layers.", "added": false},
+  {"id": "C1C-11", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "In a layered protocol stack, each __________ implements a service via its own internal actions while relying on services provided by the layer below.", "code": "", "opts": ["A. Layer", "B. Socket", "C. Buffer", "D. Repeater"], "ans": [0], "multi": false, "why": "Each protocol layer provides a specific service to the layer above it by performing internal actions and invoking the service of the layer directly beneath it.", "added": false},
+  {"id": "C1C-12", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ eases maintenance and updating of a complex network system because a change in one layer's implementation is transparent to the rest of the system.", "code": "", "opts": ["A. Modularization (layering)", "B. Circuit switching", "C. Asymmetric access", "D. Packet queuing"], "ans": [0], "multi": false, "why": "Modularization allows a layer's internal implementation to be updated without affecting other layers, as long as its service interface stays the same.", "added": false},
+  {"id": "C1C-13", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "Which layer of the Internet protocol stack supports network applications (such as HTTP, SMTP, and IMAP) and is implemented in end systems?", "code": "", "opts": ["A. Physical layer", "B. Network layer", "C. Link layer", "D. Application layer"], "ans": [3], "multi": false, "why": "The Application layer resides in end systems and supports network applications and their protocols (HTTP, SMTP, IMAP, DNS).", "added": false},
+  {"id": "C1C-14", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "Which layer is responsible for process-to-process data transfer (such as TCP and UDP)?", "code": "", "opts": ["A. Session layer", "B. Data link layer", "C. Transport layer", "D. Network layer"], "ans": [2], "multi": false, "why": "The Transport layer provides process-to-process delivery of application messages between end systems.", "added": false},
+  {"id": "C1C-15", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "True or False: The TCP and UDP protocols belong to the Application layer in the TCP/IP protocol stack.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. TCP and UDP are Transport layer protocols.", "added": false},
+  {"id": "C1C-16", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "Which layer is responsible for routing datagrams from source to destination (e.g., IP and routing protocols)?", "code": "", "opts": ["A. Application layer", "B. Transport layer", "C. Network layer", "D. Physical layer"], "ans": [2], "multi": false, "why": "The Network layer moves network-layer packets (datagrams) from one host to another across interconnected routers.", "added": false},
+  {"id": "C1C-17", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "Which layer is responsible for data transfer between neighboring network elements (e.g., Ethernet, 802.11 WiFi, PPP)?", "code": "", "opts": ["A. Data link layer", "B. Physical layer", "C. Transport layer", "D. Application layer"], "ans": [0], "multi": false, "why": "The Link (Data link) layer moves entire frames from one network element to an adjacent network element.", "added": false},
+  {"id": "C1C-18", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "True or False: HTTP is one of the Data Link layer protocols.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. HTTP is an Application layer protocol (Link layer protocols include Ethernet, 802.11 WiFi, and PPP).", "added": false},
+  {"id": "C1C-19", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "Which layer represents bits 'on the wire' and moves individual bits from one node to the next?", "code": "", "opts": ["A. Physical layer", "B. Link layer", "C. Network layer", "D. Transport layer"], "ans": [0], "multi": false, "why": "The Physical layer is the lowest layer in the protocol stack, responsible for transmitting individual bits across a physical medium.", "added": false},
+  {"id": "C1C-20", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "In the layered model, as data moves from the upper layers to the lower layers, headers are __________.", "code": "", "opts": ["A. Removed", "B. Added", "C. Rearranged", "D. Randomized"], "ans": [1], "multi": false, "why": "During encapsulation at the sender, each lower layer prepends its own header (Ht, Hn, Hl) to the payload passed down from above.", "added": false},
+  {"id": "C1C-21", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "In the layered model, as a data packet moves from the lower layers to the upper layers, headers are __________.", "code": "", "opts": ["A. Removed", "B. Added", "C. Rearranged", "D. Randomized"], "ans": [0], "multi": false, "why": "During decapsulation at the receiver, each layer strips off its corresponding header before passing the payload upward.", "added": false},
+  {"id": "C1C-22", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "In Internet encapsulation, the transport layer adds a header to an application message to form a __________, while the network layer unit is a datagram and the link layer unit is a frame.", "code": "", "opts": ["A. Segment", "B. Bit", "C. Socket", "D. Cookie"], "ans": [0], "multi": false, "why": "Encapsulation PDU names from top to bottom are: Message (Application) -> Segment (Transport) -> Datagram (Network) -> Frame (Link).", "added": false},
+  {"id": "C1C-23", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "What are the full forms of OSI (7 layers) and TCP/IP?", "code": "", "opts": ["A. Open System Interconnection / Transmission Control Protocol / Internet Protocol", "B. Operating System Interface / Telephone Control Protocol / Internet Protocol", "C. Optical System Interconnection / Transmission Control Protocol / Internal Protocol", "D. Open System Internet / Telecommunication Control Protocol / International Protocol"], "ans": [0], "multi": false, "why": "OSI stands for Open System Interconnection (7-layer ISO reference model), and TCP/IP stands for Transmission Control Protocol / Internet Protocol.", "added": false},
+  {"id": "C1C-24", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ was the first host-to-host protocol deployed on ARPAnet in 1972.", "code": "", "opts": ["A. NCP (Network Control Protocol)", "B. HTTP/1.1", "C. IMAP", "D. Ethernet"], "ans": [0], "multi": false, "why": "Network Control Protocol (NCP) was the first host-to-host protocol used on the ARPAnet in 1972 before TCP/IP.", "added": false},
+  {"id": "C1C-25", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ was a pioneering satellite packet network developed in Hawaii in 1970.", "code": "", "opts": ["A. ALOHAnet", "B. NSFnet", "C. CSnet", "D. BITnet"], "ans": [0], "multi": false, "why": "ALOHAnet was a satellite radio packet network created in Hawaii in 1970.", "added": false},
+  {"id": "C1C-26", "category": "Ch. 1 (Lec 3–6): Security, Layers & History", "q": "__________ was defined in 1983 and is necessary to translate a hostname address to an IP address.", "code": "", "opts": ["A. DNS (Domain Name System)", "B. HTTP", "C. NCP", "D. DSLAM"], "ans": [0], "multi": false, "why": "DNS (defined in 1983) translates human-readable hostnames (like www.example.com) into numerical IP addresses.", "added": false},
+
+  {"id": "C2-01", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "True or False: Network-core devices (routers and link-layer switches) can run user application-layer software.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Network-core devices do not run user applications; application programs run exclusively on end systems (hosts).", "added": false},
+  {"id": "C2-02", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "In the __________ paradigm, an always-on host with a permanent IP address serves intermittently connected clients that do not communicate directly with each other.", "code": "", "opts": ["A. Client-server", "B. Peer-to-peer (P2P)", "C. Circuit-switched", "D. Bus multipoint"], "ans": [0], "multi": false, "why": "In the client-server architecture, the server is always on with a fixed IP address, while clients may have dynamic IPs and never talk directly to one another.", "added": false},
+  {"id": "C2-03", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "In a __________ architecture, there is no always-on server and arbitrary end systems communicate directly with each other.", "code": "", "opts": ["A. Peer-to-peer (P2P)", "B. Client-server", "C. Hierarchical Tier-1", "D. Star central-controller"], "ans": [0], "multi": false, "why": "In a P2P architecture, peers act as both clients and servers, exchanging data directly without relying on an always-on central server.", "added": false},
+  {"id": "C2-04", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "A key advantage of P2P architectures is __________, where new peers bring new service capacity as well as new service demands.", "code": "", "opts": ["A. Self-scalability", "B. Statelessness", "C. Asymmetric bandwidth", "D. Circuit reservation"], "ans": [0], "multi": false, "why": "Self-scalability means each peer both consumes resources and contributes upload/service capacity to the system.", "added": false},
+  {"id": "C2-05", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "A __________ is a program running within a host; within the same host, two of them communicate using inter-process communication (IPC).", "code": "", "opts": ["A. Process", "B. Socket", "C. Router", "D. Packet"], "ans": [0], "multi": false, "why": "A process is an executing program on a host. Processes on the same host use OS-defined IPC, while processes on different hosts exchange network messages.", "added": false},
+  {"id": "C2-06", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "In a communication session between a pair of processes, the __________ initiates communication, while the server process waits to be contacted.", "code": "", "opts": ["A. Client process", "B. Server process", "C. Packet switch", "D. Operating system"], "ans": [0], "multi": false, "why": "Regardless of whether the app is client-server or P2P, the process that initiates communication is labeled the client process.", "added": false},
+  {"id": "C2-07", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "A __________ is analogous to a door through which an application process sends and receives messages to/from the network.", "code": "", "opts": ["A. Socket", "B. Port", "C. Buffer", "D. Tap"], "ans": [0], "multi": false, "why": "A socket is the software interface between the application layer and the transport layer within a host.", "added": false},
+  {"id": "C2-08", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "A host computer on the Internet is identified by a unique 32-bit __________.", "code": "", "opts": ["A. IP address", "B. Port number", "C. URL", "D. Cookie ID"], "ans": [0], "multi": false, "why": "Every host connected to the Internet has a unique 32-bit IPv4 address identifying the host machine.", "added": false},
+  {"id": "C2-09", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Because many processes can run on the same host, a receiving process identifier must include both the IP address and the __________ associated with the process.", "code": "", "opts": ["A. Port number", "B. Subnet mask", "C. MAC address", "D. Status code"], "ans": [0], "multi": false, "why": "To deliver a message to the right application process on a host, both the host's IP address and the destination port number are required.", "added": false},
+  {"id": "C2-10", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "What is the default port number of an HTTP Web server?", "code": "", "opts": ["A. 80", "B. 25", "C. 21", "D. 53"], "ans": [0], "multi": false, "why": "HTTP Web servers listen by default on TCP port 80.", "added": false},
+  {"id": "C2-11", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "True or False: A Web server process (which uses the HTTP protocol) is identified by port number 25.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. Port 25 is used by mail servers (SMTP); a Web server using HTTP is identified by port 80.", "added": false},
+  {"id": "C2-12", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "In an application-layer protocol, __________ defines what fields appear in messages and how fields are delineated, whereas message semantics defines the meaning of those fields.", "code": "", "opts": ["A. Message syntax", "B. Message semantics", "C. Congestion control", "D. Flow control"], "ans": [0], "multi": false, "why": "Message syntax specifies the fields and formatting of protocol messages, while semantics specifies the meaning of the information inside those fields.", "added": false},
+  {"id": "C2-13", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "__________ protocols (such as HTTP and SMTP) are defined in RFCs and publicly accessible to allow interoperability, unlike proprietary protocols.", "code": "", "opts": ["A. Open", "B. Proprietary", "C. Stateless", "D. Elastic"], "ans": [0], "multi": false, "why": "Open protocols are published in public RFCs so independent implementations can interoperate seamlessly.", "added": false},
+  {"id": "C2-14", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Some applications (such as file transfer and web transactions) require 100% reliable data transfer, a transport requirement called __________.", "code": "", "opts": ["A. Data integrity", "B. Timing", "C. Elasticity", "D. Multiplexing"], "ans": [0], "multi": false, "why": "Data integrity (reliability) ensures that every bit sent by the sending application arrives intact at the receiving application.", "added": false},
+  {"id": "C2-15", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "__________ applications (such as web documents, email, and file transfer) make use of whatever throughput they get.", "code": "", "opts": ["A. Elastic", "B. Bandwidth-sensitive", "C. Loss-tolerant", "D. Connectionless"], "ans": [0], "multi": false, "why": "Elastic applications do not require a strict minimum throughput and adapt to whatever bandwidth is available.", "added": false},
+  {"id": "C2-16", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "__________ ensures that a fast sender will not overwhelm a slow receiver, whereas congestion control throttles the sender when the network is overloaded.", "code": "", "opts": ["A. Flow control", "B. Congestion control", "C. Timing guarantee", "D. Handshaking"], "ans": [0], "multi": false, "why": "Flow control matches the sender's sending rate to the receiver's buffer capacity, while congestion control protects the network links from overload.", "added": false},
+  {"id": "C2-17", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "__________ provides connection-oriented, reliable transport between sending and receiving processes along with flow control and congestion control.", "code": "", "opts": ["A. TCP", "B. UDP", "C. IP", "D. HTTP"], "ans": [0], "multi": false, "why": "TCP (Transmission Control Protocol) offers connection setup, reliable byte-stream delivery, flow control, and congestion control.", "added": false},
+  {"id": "C2-18", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "True or False: The TCP transport protocol is unreliable.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. TCP provides 100% reliable data transfer; UDP is the unreliable transport protocol.", "added": false},
+  {"id": "C2-19", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Applications that cannot tolerate data loss and can tolerate some delay should use __________.", "code": "", "opts": ["A. UDP transport protocol", "B. Both TCP and UDP", "C. TCP transport protocol", "D. None of them"], "ans": [2], "multi": false, "why": "TCP guarantees zero data loss (retransmitting lost segments) while offering no strict timing/delay guarantees.", "added": false},
+  {"id": "C2-20", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "__________ provides a lightweight, connectionless, unreliable data transfer service between sending and receiving processes.", "code": "", "opts": ["A. UDP", "B. TCP", "C. HTTP", "D. SMTP"], "ans": [0], "multi": false, "why": "UDP (User Datagram Protocol) is a no-frills, connectionless transport protocol without reliability, flow control, or congestion control.", "added": false},
+  {"id": "C2-21", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "True or False: In UDP, there is handshaking between sender and receiver to establish a connection, but there is no flow control and no congestion control.", "code": "", "opts": ["A. True", "B. False"], "ans": [1], "multi": false, "why": "False. UDP is connectionless—there is NO handshaking between sender and receiver before sending data.", "added": false},
+  {"id": "C2-22", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "A web page consists of a base HTML file which includes several referenced objects, each addressable by a __________.", "code": "", "opts": ["A. URL", "B. Port number", "C. MAC address", "D. DSLAM"], "ans": [0], "multi": false, "why": "Every web object is identified by a Uniform Resource Locator (URL) consisting of a host name and a path name.", "added": false},
+  {"id": "C2-23", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "What is the full form of HTTP, the Web's application-layer protocol primarily used for browsing web pages?", "code": "", "opts": ["A. HyperText Transfer Protocol", "B. HyperText Transfer Package", "C. Hyper Transfer Text Package", "D. Hyper Transfer Text Practice"], "ans": [0], "multi": false, "why": "HTTP stands for HyperText Transfer Protocol.", "added": false},
+  {"id": "C2-24", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "HTTP is a __________ protocol because the server maintains no information about past client requests.", "code": "", "opts": ["A. Stateless", "B. Stateful", "C. Connectionless", "D. Circuit-switched"], "ans": [0], "multi": false, "why": "An HTTP server does not store session history of previous client requests, making HTTP a stateless protocol.", "added": false},
+  {"id": "C2-25", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "At most one object can be sent over a single TCP connection (which is then closed) when using __________ HTTP.", "code": "", "opts": ["A. Both persistent and non-persistent", "B. Non-persistent", "C. Persistent", "D. None of them"], "ans": [1], "multi": false, "why": "In non-persistent HTTP, each TCP connection carries at most one request/response object before closing.", "added": false},
+  {"id": "C2-26", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Multiple objects can be sent over a single TCP connection between client and server when using __________ HTTP (HTTP/1.1).", "code": "", "opts": ["A. Both persistent and non-persistent", "B. Non-persistent", "C. None of them", "D. Persistent"], "ans": [3], "multi": false, "why": "In persistent HTTP (the default in HTTP/1.1), the server keeps the TCP connection open after sending a response so subsequent objects can reuse it.", "added": false},
+  {"id": "C2-27", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "The time for a small packet to travel from client to server and back is called __________.", "code": "", "opts": ["A. Response time", "B. Request time", "C. RTT (Round Trip Time)", "D. Transmission delay"], "ans": [2], "multi": false, "why": "RTT (Round Trip Time) is the round-trip propagation/queuing/processing time for a small packet to go from client to server and return.", "added": false},
+  {"id": "C2-28", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "The non-persistent HTTP response time to fetch a single file equals __________ plus the file transmission time.", "code": "", "opts": ["A. 2 RTT", "B. 1 RTT", "C. 3 RTT", "D. 0.5 RTT"], "ans": [0], "multi": false, "why": "Non-persistent HTTP requires 1 RTT to open the TCP connection plus 1 RTT to send the HTTP request and receive the start of the response, totaling 2 RTT + file transmission time.", "added": false},
+  {"id": "C2-29", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Which HTTP request method sends user form input from the client to the server inside the entity body of the HTTP request message?", "code": "", "opts": ["A. POST", "B. GET", "C. HEAD", "D. PUT"], "ans": [0], "multi": false, "why": "The HTTP POST method places form data inside the entity body of the request message.", "added": false},
+  {"id": "C2-30", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Which HTTP request method sends user data inside the URL field of the request message (following a '?' character)?", "code": "", "opts": ["A. GET", "B. POST", "C. HEAD", "D. PUT"], "ans": [0], "multi": false, "why": "With the GET method, form parameters are appended directly to the requested URL after a '?' (e.g., /animalsearch?monkeys&banana).", "added": false},
+  {"id": "C2-31", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Which HTTP request method requests only the headers that would be returned if the specified URL were requested with GET?", "code": "", "opts": ["A. HEAD", "B. GET", "C. POST", "D. PUT"], "ans": [0], "multi": false, "why": "The HEAD method instructs the server to return only the HTTP response headers without the requested object body (useful for debugging).", "added": false},
+  {"id": "C2-32", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "If a user needs to upload a new file (object) to a server, replacing the file at the specified URL, which HTTP message is used?", "code": "", "opts": ["A. HEAD", "B. PUT", "C. GET", "D. POST"], "ans": [1], "multi": false, "why": "The HTTP PUT method uploads a new object in the entity body to replace the resource at the specified URL.", "added": false},
+  {"id": "C2-33", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "In an HTTP server-to-client response message, the __________ appears in the first line (the status line).", "code": "", "opts": ["A. Status code", "B. Entity body", "C. Cookie file", "D. Request method"], "ans": [0], "multi": false, "why": "The first line of an HTTP response is the status line, containing the protocol version, status code, and status phrase (e.g., HTTP/1.1 200 OK).", "added": false},
+  {"id": "C2-34", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Which HTTP response status code indicates that the request succeeded and the requested object is included later in the response message?", "code": "", "opts": ["A. 200 OK", "B. 301 Moved Permanently", "C. 400 Bad Request", "D. 404 Not Found"], "ans": [0], "multi": false, "why": "Status code 200 OK indicates that the HTTP request succeeded.", "added": false},
+  {"id": "C2-35", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Which HTTP response status code indicates that the requested object has moved, with the new URL specified in the Location: header field?", "code": "", "opts": ["A. 301 Moved Permanently", "B. 200 OK", "C. 400 Bad Request", "D. 505 HTTP Version Not Supported"], "ans": [0], "multi": false, "why": "Status code 301 Moved Permanently redirects the client to the new URL given in the Location: header.", "added": false},
+  {"id": "C2-36", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Which HTTP response status code is a generic error code indicating that the request message was not understood by the server?", "code": "", "opts": ["A. 400 Bad Request", "B. 200 OK", "C. 301 Moved Permanently", "D. 404 Not Found"], "ans": [0], "multi": false, "why": "Status code 400 Bad Request indicates a malformed syntax error in the client's HTTP request.", "added": false},
+  {"id": "C2-37", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "True or False: The HTTP response status code that tells the user the requested document was not found on this server is 404 Not Found.", "code": "", "opts": ["A. True", "B. False"], "ans": [0], "multi": false, "why": "True. Status code 404 Not Found means the requested resource does not exist on the server.", "added": false},
+  {"id": "C2-38", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "What is used by websites and client browsers to maintain state across stateless HTTP transactions?", "code": "", "opts": ["A. TCP connection", "B. Proxy server", "C. Cookies", "D. None of them"], "ans": [2], "multi": false, "why": "Cookies use HTTP set-cookie/cookie headers, a local browser cookie file, and a backend database to track user state across stateless HTTP requests.", "added": false},
+  {"id": "C2-39", "category": "Ch. 2 (Lec 7–8): Application Layer & HTTP", "q": "Third-party persistent cookies, also called __________, allow a common user identity to be tracked across multiple websites.", "code": "", "opts": ["A. Tracking cookies", "B. Session sockets", "C. Conditional headers", "D. Status phrases"], "ans": [0], "multi": false, "why": "Tracking cookies (third-party persistent cookies) enable cross-site tracking of a user's browsing identity.", "added": false}
+];
+const TOPICS = [...new Set(Q.map((q) => q.category))];
+
+const KEY = "network-midterm-quiz-v2";
+const LETTERS = "ABCD";
+const $ = (id) => document.getElementById(id);
+const byId = Object.fromEntries(Q.map((q) => [q.id, q]));
+
+const stripOpt = (s) => s.replace(/^[A-E]\.\s*/, "");
+
+function buildOptOrder(q) {
+  const n = q.opts.length;
+  if (n === 2 && /^True$/i.test(stripOpt(q.opts[0])) && /^False$/i.test(stripOpt(q.opts[1]))) {
+    return [0, 1];
+  }
+  const free = [];
+  const pinned = [];
+  for (let i = 0; i < n; i++) {
+    const t = stripOpt(q.opts[i]);
+    if (/^(all of|none of|both\b)/i.test(t)) pinned.push(i);
+    else free.push(i);
+  }
+  for (let i = free.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [free[i], free[j]] = [free[j], free[i]];
+  }
+  return [...free, ...pinned];
+}
+
+function makeAllOptOrders() {
+  const map = {};
+  Q.forEach((q) => { map[q.id] = buildOptOrder(q); });
+  return map;
+}
+
+const fresh = () => ({
+  topic: "all", mode: "practice", graded: false, only: null,
+  i: 0, order: Q.map((q) => q.id), optOrder: makeAllOptOrders(), sel: {}, done: {}
+});
+let S = fresh();
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY));
+  if (saved && Array.isArray(saved.order) && saved.order.length === Q.length &&
+      saved.order.every((id) => byId[id])) {
+    S = { ...S, ...saved };
+    if (!S.optOrder || typeof S.optOrder !== "object") S.optOrder = makeAllOptOrders();
+    Q.forEach((q) => {
+      if (!Array.isArray(S.optOrder[q.id]) || S.optOrder[q.id].length !== q.opts.length) {
+        S.optOrder[q.id] = buildOptOrder(q);
+      }
+    });
+  }
+} catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+const esc = (s) => s.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+const answered = (q) => (S.sel[q.id] || []).length > 0;
+const isRight = (q) => {
+  const s = S.sel[q.id] || [];
+  return s.length === q.ans.length && q.ans.every((a) => s.includes(a));
+};
+const revealed = (q) => (S.mode === "practice" ? !!S.done[q.id] : S.graded);
+const scope = () => S.order.map((id) => byId[id]).filter((q) => S.topic === "all" || q.category === S.topic);
+const visible = () => scope().filter((q) => !S.only || S.only.includes(q.id));
+const missed = () => scope().filter((q) => revealed(q) && !isRight(q));
+const letterList = (q, arr) => {
+  const ord = S.optOrder[q.id] || q.opts.map((_, i) => i);
+  const l = arr.map((origIdx) => ord.indexOf(origIdx)).sort((a, b) => a - b).map((pos) => LETTERS[pos]);
+  return l.length < 3 ? l.join(" and ") : l.slice(0, -1).join(", ") + " and " + l[l.length - 1];
+};
+
+function render() {
+  const list = visible();
+  if (S.i >= list.length) S.i = Math.max(0, list.length - 1);
+  renderToolbar();
+  renderSummary();
+  renderStatus(list);
+  renderCard(list);
+  renderNav(list);
+  renderGrid(list);
+  $("f-missed").textContent = S.only ? "Show all questions" : "Missed only";
+  $("f-missed").disabled = !S.only && missed().length === 0;
+}
+
+function renderToolbar() {
+  const count = (t) => Q.filter((q) => q.category === t).length;
+  $("topic").innerHTML =
+    `<option value="all">All topics (${Q.length})</option>` +
+    TOPICS.map((t) => `<option value="${esc(t)}">${esc(t)} (${count(t)})</option>`).join("");
+  $("topic").value = S.topic;
+  $("m-practice").setAttribute("aria-pressed", S.mode === "practice");
+  $("m-exam").setAttribute("aria-pressed", S.mode === "exam");
+}
+
+function renderSummary() {
+  const el = $("summary");
+  const all = scope();
+  if (S.only) {
+    el.innerHTML = `<p class="note">Showing ${S.only.length} missed question${S.only.length === 1 ? "" : "s"}.</p>`;
+    return;
+  }
+  const finished = all.length > 0 && (S.mode === "exam" ? S.graded : all.every((q) => S.done[q.id]));
+  if (!finished) { el.innerHTML = ""; return; }
+  const right = all.filter(isRight).length;
+  const miss = missed().length;
+  el.innerHTML = `<div class="summary">
+    <p class="big">${right} of ${all.length} correct (${Math.round((right / all.length) * 100)}%)</p>
+    <div class="actions">
+      ${miss ? `<button type="button" class="btn primary" data-act="review">Review ${miss} missed</button>` : ""}
+      <button type="button" class="btn" data-act="restart">Start over</button>
+    </div></div>`;
+}
+
+function renderStatus(list) {
+  const n = list.length;
+  $("pos").textContent = n ? `Question ${S.i + 1} of ${n}` : "";
+  const counted = S.mode === "practice" ? list.filter((q) => S.done[q.id]) : list.filter(answered);
+  if (S.mode === "practice" || S.graded) {
+    const shown = list.filter(revealed);
+    $("score").textContent = shown.length ? `${shown.filter(isRight).length} of ${S.mode === "exam" ? n : shown.length} correct` : "";
+  } else {
+    $("score").textContent = `${counted.length} of ${n} answered`;
+  }
+  $("fill").style.width = n ? `${(counted.length / n) * 100}%` : "0";
+}
+
+function renderCard(list) {
+  const card = $("card");
+  if (!list.length) { card.innerHTML = `<p class="note">No questions to show.</p>`; return; }
+  const q = list[S.i];
+  const sel = S.sel[q.id] || [];
+  const rev = revealed(q);
+  const ord = S.optOrder[q.id] || q.opts.map((_, i) => i);
+  const opts = ord.map((origIdx, pos) => {
+    const picked = sel.includes(origIdx);
+    const right = q.ans.includes(origIdx);
+    let cls = "opt" + (q.multi ? " multi" : "") + (picked ? " picked" : "");
+    let tag = "", mark = "";
+    if (rev && right) { cls += " right"; tag = picked ? "Correct" : "Correct answer"; mark = "✓"; }
+    else if (rev && picked) { cls += " wrong"; tag = "Your answer"; mark = "✕"; }
+    const label = `${LETTERS[pos]}. ${stripOpt(q.opts[origIdx])}`;
+    return `<button type="button" class="${cls}" data-k="${origIdx}" data-pos="${pos}" aria-pressed="${picked}">
+      <span class="key">${mark}</span>
+      <span class="txt">${esc(label)}${tag ? `<span class="tag">${tag}</span>` : ""}</span>
+    </button>`;
+  }).join("");
+
+  let why = "";
+  if (rev) {
+    const ok = isRight(q);
+    const lead = ok ? "Correct."
+      : `${answered(q) ? "Incorrect." : "Not answered."} The answer${q.ans.length > 1 ? "s are" : " is"} ${letterList(q, q.ans)}.`;
+    why = `<div class="why ${ok ? "ok" : "bad"}"><p class="verdict">${lead}</p><p>${esc(q.why)}</p></div>`;
+  }
+
+  card.innerHTML = `
+    <p class="cap"><span>${esc(q.category)}</span><span>${q.added ? "Added question " : ""}${esc(q.id)}</span></p>
+    <h2 class="q">${esc(q.q)}</h2>
+    ${q.code ? `<pre><code>${esc(q.code)}</code></pre>` : ""}
+    <div class="opts${rev ? " locked" : ""}" role="group" aria-label="Answer options">${opts}</div>
+    ${why}`;
+}
+
+function renderNav(list) {
+  if (!list.length) { $("nav").innerHTML = ""; return; }
+  const q = list[S.i];
+  const last = S.i === list.length - 1;
+  const rev = revealed(q);
+  const next = (primary) =>
+    `<button type="button" class="btn${primary ? " primary" : ""}" data-act="next" ${last ? "disabled" : ""}>Next</button>`;
+  let right = "";
+  if (S.mode === "practice") {
+    if (!rev && q.multi) {
+      right = `<button type="button" class="btn primary" data-act="check" ${answered(q) ? "" : "disabled"}>Check answer</button>${next(false)}`;
+    } else if (rev && !isRight(q)) {
+      right = `<button type="button" class="btn" data-act="retry">Try again</button>${next(true)}`;
+    } else {
+      right = next(rev);
+    }
+  } else {
+    right = next(false) + (S.graded ? "" : `<button type="button" class="btn primary" data-act="finish">Finish exam</button>`);
+  }
+  $("nav").innerHTML =
+    `<button type="button" class="btn" data-act="prev" ${S.i === 0 ? "disabled" : ""}>Previous</button>
+     <div class="right-group">${right}</div>`;
+}
+
+function renderGrid(list) {
+  $("grid").innerHTML = list.map((q, idx) => {
+    let cls = "";
+    if (revealed(q)) cls = isRight(q) ? "right" : "wrong";
+    else if (answered(q)) cls = "answered";
+    if (idx === S.i) cls += " current";
+    return `<button type="button" class="${cls}" data-i="${idx}" aria-label="Question ${idx + 1}">${idx + 1}</button>`;
+  }).join("");
+}
+
+function go(i) {
+  S.i = i;
+  save();
+  render();
+  window.scrollTo(0, 0);
+}
+
+function choose(origIdx) {
+  const q = visible()[S.i];
+  if (!q || revealed(q) || origIdx < 0 || origIdx >= q.opts.length) return;
+  let s = S.sel[q.id] || [];
+  if (q.multi) {
+    s = s.includes(origIdx) ? s.filter((x) => x !== origIdx) : [...s, origIdx];
+  } else {
+    s = [origIdx];
+    if (S.mode === "practice") S.done[q.id] = true;
+  }
+  S.sel[q.id] = s;
+  save();
+  render();
+  announce(q);
+  const btn = document.querySelector(`.opt[data-k="${origIdx}"]`);
+  if (btn) btn.focus({ preventScroll: true });
+}
+
+function announce(q) {
+  $("sr").textContent = revealed(q)
+    ? (isRight(q) ? "Correct." : `Incorrect. The answer is ${letterList(q, q.ans)}.`)
+    : "";
+}
+
+function finishExam() {
+  const open = scope().filter((q) => !answered(q)).length;
+  if (open && !confirm(`${open} question${open === 1 ? " is" : "s are"} unanswered. Finish anyway?`)) return;
+  S.graded = true;
+  S.i = 0;
+  save();
+  render();
+  window.scrollTo(0, 0);
+}
+
+function clearAnswers() {
+  S.sel = {}; S.done = {}; S.graded = false; S.only = null; S.i = 0;
+}
+
+function setMode(mode) {
+  if (mode === S.mode) return;
+  if (Object.keys(S.sel).length && !confirm("Switching mode clears your answers. Continue?")) return;
+  S.mode = mode;
+  clearAnswers();
+  save();
+  render();
+}
+
+function answerKey() {
+  const out = ["Computer Network Technology Quiz: Answer Key", ""];
+  visible().forEach((q, n) => {
+    out.push(`${n + 1}. [${q.id}] ${q.q}`);
+    if (q.code) out.push(...q.code.split("\n").map((l) => "   " + l));
+    const ord = S.optOrder[q.id] || q.opts.map((_, i) => i);
+    ord.forEach((origIdx, pos) => out.push(`   ${LETTERS[pos]}. ${stripOpt(q.opts[origIdx])}`));
+    out.push(`   Answer: ${letterList(q, q.ans)}`, `   ${q.why}`, "");
+  });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([out.join("\n")], { type: "text/plain;charset=utf-8" }));
+  a.download = "network-midterm-answer-key.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function act(name) {
+  const list = visible();
+  const q = list[S.i];
+  if (name === "prev" && S.i > 0) go(S.i - 1);
+  else if (name === "next" && S.i < list.length - 1) go(S.i + 1);
+  else if (name === "check" && q && answered(q)) { S.done[q.id] = true; save(); render(); announce(q); }
+  else if (name === "retry" && q) { delete S.sel[q.id]; delete S.done[q.id]; save(); render(); }
+  else if (name === "finish") finishExam();
+  else if (name === "review") { S.only = missed().map((m) => m.id); S.i = 0; save(); render(); }
+  else if (name === "restart") { clearAnswers(); save(); render(); window.scrollTo(0, 0); }
+}
+
+document.addEventListener("click", (e) => {
+  const opt = e.target.closest(".opt");
+  if (opt) return choose(Number(opt.dataset.k));
+  const cell = e.target.closest("#grid button");
+  if (cell) return go(Number(cell.dataset.i));
+  const btn = e.target.closest("[data-act]");
+  if (btn) act(btn.dataset.act);
+});
+
+$("topic").onchange = (e) => { S.topic = e.target.value; S.only = null; S.i = 0; save(); render(); };
+$("m-practice").onclick = () => setMode("practice");
+$("m-exam").onclick = () => setMode("exam");
+$("f-missed").onclick = () => {
+  S.only = S.only ? null : missed().map((q) => q.id);
+  S.i = 0;
+  save();
+  render();
+};
+$("f-shuffle").onclick = () => {
+  const o = S.order;
+  for (let i = o.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [o[i], o[j]] = [o[j], o[i]];
+  }
+  S.optOrder = makeAllOptOrders();
+  S.i = 0;
+  save();
+  render();
+};
+$("f-key").onclick = answerKey;
+$("f-reset").onclick = () => {
+  if (!confirm("Clear all answers and start over?")) return;
+  S = fresh();
+  save();
+  render();
+};
+
+document.addEventListener("keydown", (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (/^(SELECT|INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+  if (e.key === "ArrowRight") act("next");
+  else if (e.key === "ArrowLeft") act("prev");
+  else if (/^[a-dA-D]$/.test(e.key)) {
+    const q = visible()[S.i];
+    const pos = LETTERS.indexOf(e.key.toUpperCase());
+    const ord = q && S.optOrder[q.id];
+    if (ord && pos >= 0 && pos < ord.length) choose(ord[pos]);
+  } else if (/^[1-4]$/.test(e.key)) {
+    const q = visible()[S.i];
+    const pos = Number(e.key) - 1;
+    const ord = q && S.optOrder[q.id];
+    if (ord && pos < ord.length) choose(ord[pos]);
+  }
+});
+
+render();
+</script>
+</body>
+</html>

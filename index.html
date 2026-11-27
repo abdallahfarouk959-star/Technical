@@ -53,10 +53,11 @@
       letter-spacing: 0 !important;
     }
 
-    /* Viewport wrapper for 1600x900 stage */
+    /* Viewport wrapper for 1600x900 stage on desktop */
     #viewport {
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -87,6 +88,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       z-index: 20;
       flex-shrink: 0;
     }
@@ -98,6 +100,7 @@
       font-weight: 700;
       font-size: 20px;
       color: var(--text-primary);
+      min-width: 0;
     }
 
     .brand-icon {
@@ -109,12 +112,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .topbar-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .ctrl-btn {
@@ -131,6 +136,7 @@
       align-items: center;
       gap: 8px;
       transition: background 0.18s, border-color 0.18s, color 0.18s;
+      white-space: nowrap;
     }
 
     .ctrl-btn:hover, .ctrl-btn:focus-visible {
@@ -177,6 +183,7 @@
       flex: 1;
       position: relative;
       overflow: hidden;
+      min-height: 0;
     }
 
     .slide {
@@ -207,6 +214,7 @@
       border-radius: 999px;
       margin-bottom: 10px;
       width: fit-content;
+      max-width: 100%;
     }
 
     .slide-title {
@@ -231,6 +239,13 @@
       max-width: 1180px;
     }
 
+    .stat-num {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
     /* Cards & Grids */
     .grid-2 {
       display: grid;
@@ -250,12 +265,50 @@
       gap: 20px;
     }
 
+    .journey-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .slide-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .hero-banner-bar {
+      background: #0F172A;
+      color: #F8FAFC;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 28px;
+    }
+
+    .rx-total-bar {
+      background: var(--brand-primary-light);
+      padding: 12px 18px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--brand-primary-dark);
+    }
+
     .card {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 24px;
       box-shadow: var(--shadow-sm);
+      min-width: 0;
     }
 
     .card-title {
@@ -300,6 +353,7 @@
       line-height: 1.5;
       overflow: auto;
       border: 1px solid #334155;
+      max-width: 100%;
     }
 
     .code-key { color: #38BDF8; }
@@ -344,6 +398,7 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
       transition: transform 0.15s, background 0.2s;
@@ -355,14 +410,19 @@
     }
 
     /* Table */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+    }
+
     table.data-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 19px;
       background: var(--bg-surface);
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
     }
 
     table.data-table th {
@@ -371,6 +431,7 @@
       padding: 14px 18px;
       font-weight: 700;
       text-align: start;
+      white-space: nowrap;
     }
 
     table.data-table td {
@@ -392,6 +453,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       flex-shrink: 0;
     }
 
@@ -400,6 +462,12 @@
       font-weight: 700;
       color: var(--text-secondary);
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .footer-hint {
+      font-size: 17px;
+      color: var(--text-muted);
     }
 
     .nav-group {
@@ -442,7 +510,7 @@
     #overviewModal {
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(15, 23, 42, 0.95);
       z-index: 100;
       display: none;
       flex-direction: column;
@@ -460,6 +528,7 @@
       gap: 20px;
       margin-top: 24px;
       overflow-y: auto;
+      padding-bottom: 16px;
     }
 
     .overview-item {
@@ -485,6 +554,231 @@
     .step-hidden {
       opacity: 0 !important;
       pointer-events: none;
+    }
+
+    /* =========================================================
+       MOBILE & TABLET RESPONSIVE ADAPTATION (<= 900px)
+       ========================================================= */
+    @media (max-width: 900px) {
+      #viewport {
+        align-items: stretch;
+        justify-content: stretch;
+        background: var(--bg-stage);
+      }
+
+      #stage {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        transform: none !important;
+      }
+
+      .topbar {
+        height: auto;
+        min-height: 58px;
+        padding: 10px 14px;
+      }
+
+      .brand-badge {
+        font-size: 15px;
+        gap: 8px;
+      }
+
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+      }
+
+      .brand-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .topbar-controls {
+        gap: 6px;
+      }
+
+      .ctrl-btn {
+        padding: 7px 10px;
+        font-size: 13px;
+        gap: 5px;
+        border-radius: 8px;
+      }
+
+      #btnFullscreen {
+        display: none;
+      }
+
+      .slide {
+        padding: 18px 16px 28px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+        gap: 16px;
+      }
+
+      .slide-kicker {
+        font-size: 12.5px;
+        padding: 5px 11px;
+        margin-bottom: 8px;
+      }
+
+      .hero-title {
+        font-size: 28px;
+        line-height: 1.25;
+      }
+
+      .slide-title {
+        font-size: 23px;
+        line-height: 1.28;
+      }
+
+      .slide-subtitle {
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .stat-num {
+        font-size: 32px;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .journey-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        flex: none !important;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 14px;
+      }
+
+      .card-title {
+        font-size: 18px;
+        flex-wrap: wrap;
+      }
+
+      .card-body {
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .pill {
+        font-size: 12.5px;
+        padding: 3px 10px;
+      }
+
+      .slide-header-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-banner-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 16px;
+      }
+
+      .hero-banner-bar div {
+        font-size: 14px !important;
+      }
+
+      .rx-total-bar {
+        flex-direction: column;
+        font-size: 16px;
+        gap: 6px;
+      }
+
+      .tab-bar {
+        gap: 8px;
+      }
+
+      .tab-btn {
+        font-size: 14px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        width: 100%;
+        text-align: start;
+      }
+
+      #journeyTabs .tab-btn,
+      .slide[data-slide="6"] .tab-btn {
+        width: auto;
+        flex: 1 1 auto;
+      }
+
+      .action-btn {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 16px;
+      }
+
+      pre.code-block {
+        font-size: 12.5px;
+        padding: 12px 14px;
+      }
+
+      table.data-table {
+        font-size: 14px;
+        min-width: 560px;
+      }
+
+      table.data-table th,
+      table.data-table td {
+        padding: 10px 12px;
+      }
+
+      .footerbar {
+        height: 58px;
+        padding: 0 14px;
+      }
+
+      .footer-hint {
+        display: none;
+      }
+
+      .slide-counter {
+        font-size: 15px;
+      }
+
+      .nav-btn {
+        font-size: 15px;
+        padding: 9px 16px;
+        border-radius: 10px;
+      }
+
+      #overviewModal {
+        padding: 20px 16px;
+      }
+
+      #overviewModal h2 {
+        font-size: 20px !important;
+      }
+
+      .overview-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .overview-item {
+        padding: 14px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .ctrl-btn .btn-text-hide-xs {
+        display: none;
+      }
+
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -513,11 +807,11 @@
         <div class="topbar-controls">
           <button class="ctrl-btn" id="btnOverview" title="Slide List (O)" aria-label="Slide Overview">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            <span data-i18n="btnOverview">الشرائح (O)</span>
+            <span class="btn-text-hide-xs" data-i18n="btnOverview">الشرائح (O)</span>
           </button>
           <button class="ctrl-btn" id="btnReplay" title="Replay Animation (R)" aria-label="Replay Slide">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-            <span data-i18n="btnReplay">إعادة (R)</span>
+            <span class="btn-text-hide-xs" data-i18n="btnReplay">إعادة (R)</span>
           </button>
           <button class="ctrl-btn" id="btnFullscreen" title="Fullscreen (F)" aria-label="Toggle Fullscreen">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
@@ -539,38 +833,38 @@
 
         <!-- SLIDE 1: HERO -->
         <section class="slide active" data-slide="0">
-          <div style="margin-top: 12px;">
+          <div>
             <div class="slide-kicker" data-i18n="s1_kicker">Build with AI Hackathon · وثيقة PRD والمعمارية الكاملة</div>
             <h1 class="hero-title" data-i18n="s1_title">دواك AI — المساعد الذكي لقراءة الروشتات واكتشاف البدائل</h1>
-            <p class="slide-subtitle" style="margin-top: 16px;" data-i18n="s1_sub">منصة ويب ذكية تربط الرؤية الحاسوبية (Vision AI) و الـ RAG بقاعدة بيانات تضم أكثر من 27,617 دواء في السوق المصري لقراءة الروشتة، حساب التكلفة، واقتراح المثائل والبدائل الآمنة في ثوانٍ.</p>
+            <p class="slide-subtitle" style="margin-top: 14px;" data-i18n="s1_sub">منصة ويب ذكية تربط الرؤية الحاسوبية (Vision AI) و الـ RAG بقاعدة بيانات تضم أكثر من 27,617 دواء في السوق المصري لقراءة الروشتة، حساب التكلفة، واقتراح المثائل والبدائل الآمنة في ثوانٍ.</p>
           </div>
 
-          <div class="grid-4" style="margin: 24px 0;">
+          <div class="grid-4">
             <div class="card anim-card" style="border-top: 5px solid var(--brand-primary);">
-              <div style="font-size: 48px; font-weight: 800; color: var(--brand-primary);" class="counter" data-target="27617">27,617</div>
+              <div class="stat-num counter" style="color: var(--brand-primary);" data-target="27617">27,617</div>
               <div class="card-title" data-i18n="s1_stat1_t">دواء مصري مسجل</div>
               <div class="card-body" data-i18n="s1_stat1_d">بيانات كاملة بالاسم العربي والإنجليزي، السعر، الباركود، والمادة الفعالة.</div>
             </div>
             <div class="card anim-card" style="border-top: 5px solid var(--brand-accent);">
-              <div style="font-size: 48px; font-weight: 800; color: var(--brand-accent);">&lt; 10ms</div>
+              <div class="stat-num" style="color: var(--brand-accent);">< 10ms</div>
               <div class="card-title" data-i18n="s1_stat2_t">سرعة البحث والمطابقة</div>
               <div class="card-body" data-i18n="s1_stat2_d">بحث فوري عبر SQLite / PostgreSQL + REST API مع تطبيع الأسماء.</div>
             </div>
             <div class="card anim-card" style="border-top: 5px solid var(--semantic-warn);">
-              <div style="font-size: 48px; font-weight: 800; color: var(--semantic-warn);">2 Tiers</div>
+              <div class="stat-num" style="color: var(--semantic-warn);">2 Tiers</div>
               <div class="card-title" data-i18n="s1_stat3_t">مستويان للبدائل</div>
               <div class="card-body" data-i18n="s1_stat3_d">مثائل مطابقة للمادة الفعالة 100% + بدائل علاجية بنفس الفئة الطبية.</div>
             </div>
             <div class="card anim-card" style="border-top: 5px solid var(--semantic-danger);">
-              <div style="font-size: 48px; font-weight: 800; color: var(--semantic-danger);">0%</div>
+              <div class="stat-num" style="color: var(--semantic-danger);">0%</div>
               <div class="card-title" data-i18n="s1_stat4_t">هلوسة طبية (Anti-Hallucination)</div>
               <div class="card-body" data-i18n="s1_stat4_d">إجابات مقيدة بقاعدة البيانات و OpenFDA مع رفض صريح للمجهول.</div>
             </div>
           </div>
 
-          <div class="card" style="background: #0F172A; color: #F8FAFC; display: flex; align-items: center; justify-content: space-between; padding: 18px 28px;">
+          <div class="card hero-banner-bar">
             <div style="font-size: 19px;" data-i18n="s1_hint">استخدم الأسهم (← →) أو المسطرة للتنقل · اضغط زر اللغة بالأعلى للتبديل الفوري بين العربية والإنجليزية</div>
-            <span class="pill pill-teal" style="font-size: 17px;">React + TypeScript + Tailwind + RAG</span>
+            <span class="pill pill-teal">React + TypeScript + Tailwind + RAG</span>
           </div>
         </section>
 
@@ -581,44 +875,44 @@
             <h2 class="slide-title" data-i18n="s2_title">لماذا يعاني المريض بعد الخروج من عيادة الطبيب؟</h2>
           </div>
 
-          <div class="grid-2" style="flex: 1; align-items: stretch; margin-top: 16px;">
-            <div class="card anim-card" style="border-inline-start: 6px solid var(--semantic-danger); display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="grid-2" style="flex: 1; align-items: stretch;">
+            <div class="card anim-card" style="border-inline-start: 6px solid var(--semantic-danger); display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
               <div>
                 <span class="pill pill-danger" data-i18n="s2_prob_badge">المشكلة الحالية</span>
-                <h3 class="card-title" style="font-size: 28px; margin-top: 12px;" data-i18n="s2_prob_h">3 تحديات يومية في الصيدليات</h3>
+                <h3 class="card-title" style="margin-top: 10px;" data-i18n="s2_prob_h">3 تحديات يومية في الصيدليات</h3>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 16px;">
-                <div class="step-item" style="background: var(--bg-subtle); padding: 16px; border-radius: 12px;">
-                  <strong style="font-size: 21px; color: var(--text-primary);" data-i18n="s2_p1_t">1. صعوبة قراءة خط الروشتة:</strong>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="step-item" style="background: var(--bg-subtle); padding: 14px; border-radius: 12px;">
+                  <strong style="font-size: 18px; color: var(--text-primary);" data-i18n="s2_p1_t">1. صعوبة قراءة خط الروشتة:</strong>
                   <p class="card-body" data-i18n="s2_p1_d">المريض لا يعرف اسم الدواء المكتوب أو دواعي استعماله قبل الوصول للصيدلية.</p>
                 </div>
-                <div class="step-item" style="background: var(--bg-subtle); padding: 16px; border-radius: 12px;">
-                  <strong style="font-size: 21px; color: var(--text-primary);" data-i18n="s2_p2_t">2. مفاجأة السعر ونقص الأدوية:</strong>
+                <div class="step-item" style="background: var(--bg-subtle); padding: 14px; border-radius: 12px;">
+                  <strong style="font-size: 18px; color: var(--text-primary);" data-i18n="s2_p2_t">2. مفاجأة السعر ونقص الأدوية:</strong>
                   <p class="card-body" data-i18n="s2_p2_d">ارتفاع الأسعار المتكرر (price vs oldprice) أو اختفاء الصنف التجاري يضطر المريض للبحث عن بديل.</p>
                 </div>
-                <div class="step-item" style="background: var(--bg-subtle); padding: 16px; border-radius: 12px;">
-                  <strong style="font-size: 21px; color: var(--text-primary);" data-i18n="s2_p3_t">3. غياب المعلومة الموثوقة:</strong>
+                <div class="step-item" style="background: var(--bg-subtle); padding: 14px; border-radius: 12px;">
+                  <strong style="font-size: 18px; color: var(--text-primary);" data-i18n="s2_p3_t">3. غياب المعلومة الموثوقة:</strong>
                   <p class="card-body" data-i18n="s2_p3_d">البحث العشوائي على الإنترنت يعرض المريض لتفاعلات دوائية خطيرة أو نصائح غير دقيقة.</p>
                 </div>
               </div>
             </div>
 
-            <div class="card anim-card" style="border-inline-start: 6px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card anim-card" style="border-inline-start: 6px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
               <div>
                 <span class="pill pill-teal" data-i18n="s2_sol_badge">الحل مع دواك AI</span>
-                <h3 class="card-title" style="font-size: 28px; margin-top: 12px;" data-i18n="s2_sol_h">تجربة رقمية متكاملة في 3 خطوات</h3>
+                <h3 class="card-title" style="margin-top: 10px;" data-i18n="s2_sol_h">تجربة رقمية متكاملة في 3 خطوات</h3>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 16px;">
-                <div class="step-item" style="background: var(--brand-primary-light); padding: 16px; border-radius: 12px;">
-                  <strong style="font-size: 21px; color: var(--brand-primary-dark);" data-i18n="s2_s1_t">1. مسح ضوئي ذكي (Vision AI):</strong>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="step-item" style="background: var(--brand-primary-light); padding: 14px; border-radius: 12px;">
+                  <strong style="font-size: 18px; color: var(--brand-primary-dark);" data-i18n="s2_s1_t">1. مسح ضوئي ذكي (Vision AI):</strong>
                   <p class="card-body" style="color: var(--text-primary);" data-i18n="s2_s1_d">تصوير الروشتة بالموبايل لاستخراج أسماء الأدوية والتركيزات ومطابقتها فوراً بـ eg-drugs.</p>
                 </div>
-                <div class="step-item" style="background: var(--brand-accent-light); padding: 16px; border-radius: 12px;">
-                  <strong style="font-size: 21px; color: var(--brand-accent);" data-i18n="s2_s2_t">2. محرك المثائل والأسعار:</strong>
+                <div class="step-item" style="background: var(--brand-accent-light); padding: 14px; border-radius: 12px;">
+                  <strong style="font-size: 18px; color: var(--brand-accent);" data-i18n="s2_s2_t">2. محرك المثائل والأسعار:</strong>
                   <p class="card-body" style="color: var(--text-primary);" data-i18n="s2_s2_d">عرض السعر الرسمي وكل المثائل بنفس المادة الفعالة مرتبة من الأرخص للأغلى.</p>
                 </div>
-                <div class="step-item" style="background: var(--semantic-warn-light); padding: 16px; border-radius: 12px;">
-                  <strong style="font-size: 21px; color: var(--semantic-warn);" data-i18n="s2_s3_t">3. مساعد طبي مقيد بـ RAG:</strong>
+                <div class="step-item" style="background: var(--semantic-warn-light); padding: 14px; border-radius: 12px;">
+                  <strong style="font-size: 18px; color: var(--semantic-warn);" data-i18n="s2_s3_t">3. مساعد طبي مقيد بـ RAG:</strong>
                   <p class="card-body" style="color: var(--text-primary);" data-i18n="s2_s3_d">الإجابة عن الأعراض وموانع الاستعمال من مصادر موثقة فقط، والقول "معرفش" عند غياب الدليل.</p>
                 </div>
               </div>
@@ -633,7 +927,7 @@
             <h2 class="slide-title" data-i18n="s3_title">اضغط على كل مرحلة لاستعراض تفاصيل التجربة والنظام</h2>
           </div>
 
-          <div class="tab-bar" id="journeyTabs" style="margin: 14px 0;">
+          <div class="tab-bar" id="journeyTabs">
             <button class="tab-btn active" data-step="0" data-i18n="s3_t1">1. الدخول ورفع الروشتة</button>
             <button class="tab-btn" data-step="1" data-i18n="s3_t2">2. تحليل الذكاء الاصطناعي</button>
             <button class="tab-btn" data-step="2" data-i18n="s3_t3">3. عرض تفاصيل الدواء والسعر</button>
@@ -641,19 +935,19 @@
             <button class="tab-btn" data-step="4" data-i18n="s3_t5">5. استشارة الشات الطبي RAG</button>
           </div>
 
-          <div class="card" id="journeyDetailBox" style="flex: 1; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 28px; align-items: center;">
+          <div class="card journey-grid" id="journeyDetailBox">
             <div>
               <span class="pill pill-blue" id="jStageBadge">المرحلة 1 من 5</span>
-              <h3 style="font-size: 32px; font-weight: 800; margin: 12px 0;" id="jStageTitle">التقاط صورة الروشتة أو مسح الباركود</h3>
-              <p class="card-body" style="font-size: 22px;" id="jStageDesc">يفتح المستخدم الموقع من هاتفه، يضغط "امسح روشتتك"، يلتقط صورة واضحة للروشتة أو يرفعها من الاستوديو، مع إمكانية البحث السريع بالاسم أو الباركود.</p>
-              <div style="margin-top: 20px; padding: 16px; background: var(--bg-subtle); border-radius: 12px;">
-                <strong style="color: var(--brand-primary-dark); font-size: 19px;" data-i18n="s3_sys_label">ماذا يحدث في الخلفية (System Action):</strong>
-                <p style="font-size: 19px; color: var(--text-primary); margin-top: 6px;" id="jStageSys">ضغط الصورة على المتصفح (WebP &lt; 1MB) وإرسالها مشفرة عبر HTTPS إلى POST /api/prescription/scan.</p>
+              <h3 class="card-title" style="margin: 12px 0;" id="jStageTitle">التقاط صورة الروشتة أو مسح الباركود</h3>
+              <p class="card-body" id="jStageDesc">يفتح المستخدم الموقع من هاتفه، يضغط "امسح روشتتك"، يلتقط صورة واضحة للروشتة أو يرفعها من الاستوديو، مع إمكانية البحث السريع بالاسم أو الباركود.</p>
+              <div style="margin-top: 16px; padding: 14px; background: var(--bg-subtle); border-radius: 12px;">
+                <strong style="color: var(--brand-primary-dark); font-size: 16px;" data-i18n="s3_sys_label">ماذا يحدث في الخلفية (System Action):</strong>
+                <p class="card-body" style="color: var(--text-primary); margin-top: 6px;" id="jStageSys">ضغط الصورة على المتصفح (WebP < 1MB) وإرسالها مشفرة عبر HTTPS إلى POST /api/prescription/scan.</p>
               </div>
             </div>
-            <div style="background: #0F172A; color: #F8FAFC; border-radius: 16px; padding: 24px; height: 100%; display: flex; flex-direction: column; justify-content: center;">
-              <div style="font-size: 17px; color: #94A3B8; margin-bottom: 10px;" data-i18n="s3_ui_label">مخرج الواجهة للمستخدم (UI Output)</div>
-              <div id="jStageUi" style="font-size: 21px; line-height: 1.6; color: #38BDF8; font-weight: 600;">معاينة فورية للصورة + شريط تقدم تفاعلي + خيار تعديل الاسم يدوياً إذا كان الخط غير واضح.</div>
+            <div style="background: #0F172A; color: #F8FAFC; border-radius: 16px; padding: 20px; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+              <div style="font-size: 15px; color: #94A3B8; margin-bottom: 10px;" data-i18n="s3_ui_label">مخرج الواجهة للمستخدم (UI Output)</div>
+              <div id="jStageUi" class="card-body" style="color: #38BDF8; font-weight: 600;">معاينة فورية للصورة + شريط تقدم تفاعلي + خيار تعديل الاسم يدوياً إذا كان الخط غير واضح.</div>
             </div>
           </div>
         </section>
@@ -665,7 +959,7 @@
             <h2 class="slide-title" data-i18n="s4_title">كيف يتحدد بديل الدواء؟ (المادة الفعالة أم المواد المساعدة؟)</h2>
           </div>
 
-          <div class="grid-2" style="margin-top: 12px;">
+          <div class="grid-2">
             <div class="card anim-card" style="border-top: 5px solid var(--brand-primary);">
               <span class="pill pill-teal" data-i18n="s4_b1">المستوى الأول: المثيل الصيدلي (Equivalent)</span>
               <h3 class="card-title" style="margin-top: 10px;" data-i18n="s4_h1">نفس المادة الفعالة (active) + التركيز + الشكل</h3>
@@ -678,45 +972,47 @@
             </div>
           </div>
 
-          <div class="card" style="margin-top: 16px; background: var(--semantic-danger-light); border-color: #FECACA;">
-            <strong style="font-size: 20px; color: var(--semantic-danger);" data-i18n="s4_exc_title">متى تؤثر المواد غير الفعالة (Excipients / السواغات)؟</strong>
-            <p style="font-size: 19px; color: var(--text-primary); margin-top: 4px;" data-i18n="s4_exc_desc">في 95% من الأدوية لا تؤثر، لكن النظام يُظهر تنبيهاً ذكياً في 3 حالات: (1) حساسية اللاكتوز أو الجلوتين، (2) وجود السكر في الشراب لمرضى السكري، (3) أدوية النطاق العلاجي الضيق (NTI) مثل أدوية الغدة والسيولة والصرع.</p>
+          <div class="card" style="background: var(--semantic-danger-light); border-color: #FECACA;">
+            <strong style="font-size: 18px; color: var(--semantic-danger);" data-i18n="s4_exc_title">متى تؤثر المواد غير الفعالة (Excipients / السواغات)؟</strong>
+            <p class="card-body" style="color: var(--text-primary); margin-top: 4px;" data-i18n="s4_exc_desc">في 95% من الأدوية لا تؤثر، لكن النظام يُظهر تنبيهاً ذكياً في 3 حالات: (1) حساسية اللاكتوز أو الجلوتين، (2) وجود السكر في الشراب لمرضى السكري، (3) أدوية النطاق العلاجي الضيق (NTI) مثل أدوية الغدة والسيولة والصرع.</p>
           </div>
 
-          <table class="data-table" style="margin-top: 14px;">
-            <thead>
-              <tr>
-                <th data-i18n="s4_th1">الدواء</th>
-                <th data-i18n="s4_th2">المادة الفعالة (active)</th>
-                <th data-i18n="s4_th3">التصنيف</th>
-                <th data-i18n="s4_th4">السعر</th>
-                <th data-i18n="s4_th5">التوفير</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Concor 10mg 30 tab</strong> (الأصلي)</td>
-                <td><code>bisoprolol fumarate</code></td>
-                <td><span class="pill pill-blue" data-i18n="s4_r1_t">الدواء المطلوب</span></td>
-                <td><strong>99 EGP</strong></td>
-                <td>—</td>
-              </tr>
-              <tr>
-                <td><strong>Biso 10mg 30 tab</strong></td>
-                <td><code>bisoprolol fumarate</code></td>
-                <td><span class="pill pill-teal" data-i18n="s4_r2_t">مثيل مطابق 100%</span></td>
-                <td><strong>54 EGP</strong></td>
-                <td><strong style="color: var(--brand-primary-dark);">-45 EGP (45%)</strong></td>
-              </tr>
-              <tr>
-                <td><strong>Bystolic 5mg 28 tab</strong></td>
-                <td><code>nebivolol</code></td>
-                <td><span class="pill pill-warn" data-i18n="s4_r3_t">بديل علاجي (استشر طبيب)</span></td>
-                <td><strong>115 EGP</strong></td>
-                <td>—</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="s4_th1">الدواء</th>
+                  <th data-i18n="s4_th2">المادة الفعالة (active)</th>
+                  <th data-i18n="s4_th3">التصنيف</th>
+                  <th data-i18n="s4_th4">السعر</th>
+                  <th data-i18n="s4_th5">التوفير</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Concor 10mg 30 tab</strong> (الأصلي)</td>
+                  <td><code>bisoprolol fumarate</code></td>
+                  <td><span class="pill pill-blue" data-i18n="s4_r1_t">الدواء المطلوب</span></td>
+                  <td><strong>99 EGP</strong></td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td><strong>Biso 10mg 30 tab</strong></td>
+                  <td><code>bisoprolol fumarate</code></td>
+                  <td><span class="pill pill-teal" data-i18n="s4_r2_t">مثيل مطابق 100%</span></td>
+                  <td><strong>54 EGP</strong></td>
+                  <td><strong style="color: var(--brand-primary-dark);">-45 EGP (45%)</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Bystolic 5mg 28 tab</strong></td>
+                  <td><code>nebivolol</code></td>
+                  <td><span class="pill pill-warn" data-i18n="s4_r3_t">بديل علاجي (استشر طبيب)</span></td>
+                  <td><strong>115 EGP</strong></td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <!-- SLIDE 5: TRUSTED SOURCES & GUARDRAILS -->
@@ -726,39 +1022,39 @@
             <h2 class="slide-title" data-i18n="s5_title">كيف نضمن دقة المعلومات الطبية ومنع التوصيات الخطيرة؟</h2>
           </div>
 
-          <div class="grid-3" style="margin-top: 16px; flex: 1;">
-            <div class="card anim-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="grid-3" style="flex: 1;">
+            <div class="card anim-card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
               <div>
                 <span class="pill pill-teal">Layer 1 · Local Market DB</span>
                 <h3 class="card-title" style="margin-top: 12px;" data-i18n="s5_c1_t">قاعدة بيانات eg-drugs</h3>
                 <p class="card-body" data-i18n="s5_c1_d">المصدر الوحيد المعتمد للأسماء التجارية في مصر، الأسعار الحالية والسابقة، الشركات، الباركود، ودواعي الاستعمال بالعربية (27,617 سجل).</p>
               </div>
-              <div style="font-size: 16px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;">CC-BY-4.0 · mahmoudfalous/eg-drugs</div>
+              <div style="font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;">CC-BY-4.0 · mahmoudfalous/eg-drugs</div>
             </div>
 
-            <div class="card anim-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card anim-card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
               <div>
                 <span class="pill pill-blue">Layer 2 · Clinical Enrichment</span>
-                <h3 class="card-title" style="margin-top: 12px;" data-i18n="s5_c2_t">OpenFDA &amp; RxNorm APIs</h3>
+                <h3 class="card-title" style="margin-top: 12px;" data-i18n="s5_c2_t">OpenFDA & RxNorm APIs</h3>
                 <p class="card-body" data-i18n="s5_c2_d">ربط اسم المادة الفعالة (Generic Name) مع OpenFDA Drug Label API المجاني لجلب موانع الاستعمال (Contraindications)، التفاعلات الدوائية، وتحذيرات الحمل.</p>
               </div>
-              <div style="font-size: 16px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;">api.fda.gov/drug/label.json (No Key Needed)</div>
+              <div style="font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;">api.fda.gov/drug/label.json (No Key Needed)</div>
             </div>
 
-            <div class="card anim-card" style="display: flex; flex-direction: column; justify-content: space-between; border: 2px solid var(--semantic-danger);">
+            <div class="card anim-card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 14px; border: 2px solid var(--semantic-danger);">
               <div>
                 <span class="pill pill-danger">Layer 3 · Clinical Safety Guard</span>
                 <h3 class="card-title" style="margin-top: 12px;" data-i18n="s5_c3_t">فلتر OTC vs Rx ومنع الهبد</h3>
                 <p class="card-body" data-i18n="s5_c3_d">الشات بوت يرشح أدوية OTC فقط للأعراض البسيطة، ويمنع وصف المضادات الحيوية أو أدوية الضغط/القلب بدون روشتة، ويلتزم بـ "معرفش" خارج الداتا بيز.</p>
               </div>
-              <div style="font-size: 16px; color: var(--semantic-danger); font-weight: 700; border-top: 1px solid var(--border-color); padding-top: 10px;" data-i18n="s5_c3_f">حماية كاملة ضد Prompt Injection</div>
+              <div style="font-size: 14px; color: var(--semantic-danger); font-weight: 700; border-top: 1px solid var(--border-color); padding-top: 10px;" data-i18n="s5_c3_f">حماية كاملة ضد Prompt Injection</div>
             </div>
           </div>
         </section>
 
         <!-- SLIDE 6: INTERACTIVE RX SCANNER DEMO -->
         <section class="slide" data-slide="5">
-          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div class="slide-header-row">
             <div>
               <div class="slide-kicker" data-i18n="s6_kicker">05 · محاكاة تفاعلية (Live Interactive Demo)</div>
               <h2 class="slide-title" data-i18n="s6_title">تجربة حية: مسح روشتة واستخراج الأدوية والبدائل</h2>
@@ -769,50 +1065,50 @@
             </button>
           </div>
 
-          <div class="grid-2" style="margin-top: 18px; flex: 1; align-items: stretch;">
+          <div class="grid-2" style="flex: 1; align-items: stretch;">
             <!-- Left: Simulated Handwritten Rx -->
-            <div class="card" style="background: #FFFBEB; border: 2px dashed #D97706; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card" style="background: #FFFBEB; border: 2px dashed #D97706; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
               <div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
                   <span class="pill pill-warn" data-i18n="s6_rx_badge">صورة الروشتة المرفوعة (Sample Rx)</span>
-                  <span style="font-size: 16px; color: var(--text-muted);">JPEG · 420 KB</span>
+                  <span style="font-size: 14px; color: var(--text-muted);">JPEG · 420 KB</span>
                 </div>
-                <div style="margin-top: 18px; padding: 20px; background: #FFFFFF; border-radius: 12px; border: 1px solid #FDE68A; font-family: 'JetBrains Mono', monospace; direction: ltr; text-align: left;">
-                  <div style="color: #64748B; font-size: 15px;">Dr. Ahmed Kamal — Internal Medicine</div>
+                <div style="margin-top: 14px; padding: 16px; background: #FFFFFF; border-radius: 12px; border: 1px solid #FDE68A; font-family: 'JetBrains Mono', monospace; direction: ltr; text-align: left;">
+                  <div style="color: #64748B; font-size: 13px;">Dr. Ahmed Kamal — Internal Medicine</div>
                   <hr style="margin: 10px 0; border-color: #E2E8F0;">
-                  <div style="font-size: 22px; font-weight: 700; color: #0F172A; margin-bottom: 12px;">R/ Concor 10 mg tab — 1x1 morning</div>
-                  <div style="font-size: 22px; font-weight: 700; color: #0F172A;">R/ 1 2 3 syrup 120ml — 5ml x 3</div>
+                  <div style="font-size: 17px; font-weight: 700; color: #0F172A; margin-bottom: 10px;">R/ Concor 10 mg tab — 1x1 morning</div>
+                  <div style="font-size: 17px; font-weight: 700; color: #0F172A;">R/ 1 2 3 syrup 120ml — 5ml x 3</div>
                 </div>
               </div>
-              <div id="scanStatusText" style="font-size: 19px; font-weight: 600; color: var(--semantic-warn);" data-i18n="s6_wait">اضغط على زر "تشغيل محاكاة المسح" لمشاهدة تحليل Vision AI ومطابقة قاعدة البيانات.</div>
+              <div id="scanStatusText" class="card-body" style="font-weight: 600; color: var(--semantic-warn);" data-i18n="s6_wait">اضغط على زر "تشغيل محاكاة المسح" لمشاهدة تحليل Vision AI ومطابقة قاعدة البيانات.</div>
             </div>
 
             <!-- Right: Extracted Results -->
-            <div class="card" id="scanOutputCard" style="display: flex; flex-direction: column; justify-content: space-between; opacity: 0.45;">
+            <div class="card" id="scanOutputCard" style="display: flex; flex-direction: column; justify-content: space-between; gap: 14px; opacity: 0.45;">
               <div>
                 <span class="pill pill-teal" data-i18n="s6_res_badge">نتيجة المطابقة مع eg-drugs</span>
-                <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px;">
-                  <div style="padding: 14px; border: 1px solid var(--border-color); border-radius: 12px;">
-                    <div style="display: flex; justify-content: space-between;">
-                      <strong>Concor 10mg 30 f.c. tablets (كونكور 10مجم)</strong>
-                      <span class="pill pill-blue">99 EGP</span>
+                <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px;">
+                  <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                      <strong style="font-size: 16px;">Concor 10mg 30 f.c. tablets (كونكور 10مجم)</strong>
+                      <span class="pill pill-blue" style="flex-shrink: 0;">99 EGP</span>
                     </div>
-                    <div style="font-size: 17px; color: var(--text-secondary); margin-top: 4px;">active: <code>bisoprolol fumarate</code> · لعلاج ارتفاع ضغط الدم</div>
-                    <div style="font-size: 17px; color: var(--brand-primary-dark); font-weight: 700; margin-top: 4px;" data-i18n="s6_alt1">أرخص مثيل متاح: Biso 10mg بسعر 54 EGP (توفير 45 ج.م)</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">active: <code>bisoprolol fumarate</code> · لعلاج ارتفاع ضغط الدم</div>
+                    <div style="font-size: 14px; color: var(--brand-primary-dark); font-weight: 700; margin-top: 4px;" data-i18n="s6_alt1">أرخص مثيل متاح: Biso 10mg بسعر 54 EGP (توفير 45 ج.م)</div>
                   </div>
 
-                  <div style="padding: 14px; border: 1px solid var(--border-color); border-radius: 12px;">
-                    <div style="display: flex; justify-content: space-between;">
-                      <strong>1 2 3 syrup 120 ml (ون تو ثري شراب)</strong>
-                      <span class="pill pill-blue">40 EGP</span>
+                  <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                      <strong style="font-size: 16px;">1 2 3 syrup 120 ml (ون تو ثري شراب)</strong>
+                      <span class="pill pill-blue" style="flex-shrink: 0;">40 EGP</span>
                     </div>
-                    <div style="font-size: 17px; color: var(--text-secondary); margin-top: 4px;">active: <code>chlorpheniramine+paracetamol+pseudoephedrine</code></div>
-                    <div style="font-size: 17px; color: var(--semantic-danger); font-weight: 700; margin-top: 4px;" data-i18n="s6_warn1">تنبيه تفاعل: يحتوي على pseudoephedrine — يُراجع مع مريض الضغط!</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">active: <code>chlorpheniramine+paracetamol+pseudoephedrine</code></div>
+                    <div style="font-size: 14px; color: var(--semantic-danger); font-weight: 700; margin-top: 4px;" data-i18n="s6_warn1">تنبيه تفاعل: يحتوي على pseudoephedrine — يُراجع مع مريض الضغط!</div>
                   </div>
                 </div>
               </div>
 
-              <div style="background: var(--brand-primary-light); padding: 12px 18px; border-radius: 10px; display: flex; justify-content: space-between; font-size: 20px; font-weight: 800; color: var(--brand-primary-dark);">
+              <div class="rx-total-bar">
                 <span data-i18n="s6_total_l">إجمالي الروشتة الأصلية: 139 EGP</span>
                 <span data-i18n="s6_total_r">بالمثائل: 94 EGP</span>
               </div>
@@ -827,37 +1123,37 @@
             <h2 class="slide-title" data-i18n="s7_title">اختبر كيف يرد الشات بوت في الحالات الآمنة والمجهولة</h2>
           </div>
 
-          <div class="tab-bar" style="margin: 14px 0;">
+          <div class="tab-bar">
             <button class="tab-btn active" id="ragCaseA" data-i18n="s7_btn_a">سيناريو أ: أعراض برد + مريض ضغط مرتفع</button>
             <button class="tab-btn" id="ragCaseB" data-i18n="s7_btn_b">سيناريو ب: طلب دواء غير موجود أو وصفة خطيرة</button>
           </div>
 
           <div class="grid-2" style="flex: 1; align-items: stretch;">
             <div class="card" style="display: flex; flex-direction: column; gap: 14px;">
-              <div style="background: var(--bg-subtle); padding: 16px; border-radius: 12px;">
+              <div style="background: var(--bg-subtle); padding: 14px; border-radius: 12px;">
                 <span class="pill pill-blue" data-i18n="s7_user_l">رسالة المريض (User Prompt)</span>
-                <p id="ragUserMsg" style="font-size: 21px; font-weight: 600; margin-top: 8px;">"عندي صداع وزكام واحتقان في الأنف، بس أنا مريض ضغط مرتفع، آخد إيه؟"</p>
+                <p id="ragUserMsg" class="card-body" style="color: var(--text-primary); font-weight: 600; margin-top: 8px;">"عندي صداع وزكام واحتقان في الأنف، بس أنا مريض ضغط مرتفع، آخد إيه؟"</p>
               </div>
-              <div style="background: #0F172A; color: #E2E8F0; padding: 16px; border-radius: 12px; flex: 1;">
-                <span class="pill pill-teal">RAG Retrieval &amp; Tool Call</span>
-                <pre id="ragTrace" style="font-family: 'JetBrains Mono', monospace; direction: ltr; text-align: left; font-size: 15px; margin-top: 10px; white-space: pre-wrap; color: #38BDF8;">1. Detected Condition: hypertension
+              <div style="background: #0F172A; color: #E2E8F0; padding: 14px; border-radius: 12px; flex: 1;">
+                <span class="pill pill-teal">RAG Retrieval & Tool Call</span>
+                <pre id="ragTrace" style="font-family: 'JetBrains Mono', monospace; direction: ltr; text-align: left; font-size: 13px; margin-top: 10px; white-space: pre-wrap; color: #38BDF8;">1. Detected Condition: hypertension
 2. Rule: EXCLUDE pseudoephedrine (vasoconstrictor)
 3. Tool: search_safe_otc(symptom="headache_cold", exclude=["pseudoephedrine"])
 4. Retrieved 2 verified records from eg_drugs</pre>
               </div>
             </div>
 
-            <div class="card" style="border-inline-start: 6px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between;" id="ragBotCard">
+            <div class="card" style="border-inline-start: 6px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between; gap: 14px;" id="ragBotCard">
               <div>
                 <span class="pill pill-teal" id="ragBotBadge">رد المساعد الموثق (Grounded Response)</span>
-                <div id="ragBotReply" style="font-size: 21px; line-height: 1.65; margin-top: 14px; color: var(--text-primary);">
+                <div id="ragBotReply" class="card-body" style="margin-top: 12px; color: var(--text-primary);">
                   بما إنك مريض ضغط مرتفع، يجب تجنب أدوية البرد التي تحتوي على <strong>Pseudoephedrine</strong> لأنها قد ترفع ضغط الدم.<br><br>
                   المتاح في قاعدة البيانات كخيار آمن لتسكين الصداع والحرارة:<br>
                   • <strong>Panadol Advance 500mg</strong> (المادة الفعالة: <code>paracetamol</code>) — السعر: <strong>34 EGP</strong>.<br>
                   <em>للاحتقان: يُفضل بخاخ ماء البحر الموضعي بعد استشارة الصيدلي.</em>
                 </div>
               </div>
-              <div style="font-size: 17px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;" id="ragCitation">
+              <div style="font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;" id="ragCitation">
                 المصدر: eg_drugs (ID #14820) + OpenFDA Label (Paracetamol / Pseudoephedrine)
               </div>
             </div>
@@ -871,7 +1167,7 @@
             <h2 class="slide-title" data-i18n="s8_title">هيكل الصفحات وتجربة المستخدم (بجانب الـ Landing Page)</h2>
           </div>
 
-          <div class="grid-3" style="margin-top: 14px;">
+          <div class="grid-3">
             <div class="card anim-card" style="border-top: 5px solid var(--brand-primary);">
               <span class="pill pill-teal">/ · Landing Page</span>
               <h3 class="card-title" style="margin-top: 8px;" data-i18n="s8_p1_t">الصفحة الرئيسية التفاعلية</h3>
@@ -883,13 +1179,13 @@
               <p class="card-body" data-i18n="s8_p2_d">رفع أو تصوير الروشتة، تعديل أي اسم غير واضح، عرض إجمالي التكلفة، وزر تبديل كل دواء بالمثيل الأرخص فوراً.</p>
             </div>
             <div class="card anim-card" style="border-top: 5px solid var(--semantic-warn);">
-              <span class="pill pill-warn">/drugs · Explorer &amp; Barcode</span>
+              <span class="pill pill-warn">/drugs · Explorer & Barcode</span>
               <h3 class="card-title" style="margin-top: 8px;" data-i18n="s8_p3_t">دليل الأدوية والباركود</h3>
               <p class="card-body" data-i18n="s8_p3_d">بحث لحظي بالعربي والإنجليزي والمادة الفعالة + قارئ باركود بالكاميرا + صفحة لكل دواء تقارن السعر القديم والجديد.</p>
             </div>
           </div>
 
-          <div class="grid-2" style="margin-top: 18px;">
+          <div class="grid-2">
             <div class="card anim-card" style="border-top: 5px solid var(--brand-primary);">
               <span class="pill pill-teal">/assistant · Clinical RAG Chat</span>
               <h3 class="card-title" style="margin-top: 8px;" data-i18n="s8_p4_t">المساعد الطبي الذكي</h3>
@@ -910,45 +1206,45 @@
             <h2 class="slide-title" data-i18n="s9_title">ربط واجهة React بالذكاء الاصطناعي وقاعدة البيانات بسلاسة</h2>
           </div>
 
-          <div class="grid-4" style="margin-top: 20px; flex: 1; align-items: stretch;">
-            <div class="card anim-card" style="border-top: 6px solid var(--brand-accent); display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="grid-4" style="flex: 1; align-items: stretch;">
+            <div class="card anim-card" style="border-top: 6px solid var(--brand-accent); display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
               <div>
                 <span class="pill pill-blue">1 · Frontend (React)</span>
                 <h3 class="card-title" style="margin-top: 10px;">Next.js / React + TS</h3>
                 <p class="card-body" data-i18n="s9_c1">Tailwind CSS + Framer Motion للأنيميشن + TanStack Query للكاش + html5-qrcode للباركود.</p>
               </div>
-              <div style="font-size: 16px; color: var(--brand-accent); font-weight: 700;">HTTPS / JSON &amp; SSE Stream</div>
+              <div style="font-size: 14px; color: var(--brand-accent); font-weight: 700;">HTTPS / JSON & SSE Stream</div>
             </div>
 
-            <div class="card anim-card" style="border-top: 6px solid var(--text-primary); display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card anim-card" style="border-top: 6px solid var(--text-primary); display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
               <div>
                 <span class="pill pill-warn">2 · API Gateway</span>
                 <h3 class="card-title" style="margin-top: 10px;">Node / FastAPI Routes</h3>
                 <p class="card-body" data-i18n="s9_c2">حماية مفاتيح API في السيرفر، التحقق من المدخلات بـ Zod، وتطبيق Rate Limiting.</p>
               </div>
-              <div style="font-size: 16px; color: var(--text-primary); font-weight: 700;">/api/scan · /api/drugs · /api/chat</div>
+              <div style="font-size: 14px; color: var(--text-primary); font-weight: 700;">/api/scan · /api/drugs · /api/chat</div>
             </div>
 
-            <div class="card anim-card" style="border-top: 6px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card anim-card" style="border-top: 6px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
               <div>
                 <span class="pill pill-teal">3 · AI Orchestration</span>
                 <h3 class="card-title" style="margin-top: 10px;">Vision + RAG Agent</h3>
                 <p class="card-body" data-i18n="s9_c3">Gemini 2.5 Flash لقراءة الروشتة (Structured JSON) + Vercel AI SDK للـ Tool Calling.</p>
               </div>
-              <div style="font-size: 16px; color: var(--brand-primary-dark); font-weight: 700;">OCR + Embeddings + Guardrails</div>
+              <div style="font-size: 14px; color: var(--brand-primary-dark); font-weight: 700;">OCR + Embeddings + Guardrails</div>
             </div>
 
-            <div class="card anim-card" style="border-top: 6px solid var(--semantic-danger); display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card anim-card" style="border-top: 6px solid var(--semantic-danger); display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
               <div>
                 <span class="pill pill-danger">4 · Data Layer</span>
                 <h3 class="card-title" style="margin-top: 10px;">Postgres + pgvector</h3>
                 <p class="card-body" data-i18n="s9_c4">استيراد eg_drugs.sql (27,617 سجل) مع فهارس بحث نصي ودلالي + ربط OpenFDA API.</p>
               </div>
-              <div style="font-size: 16px; color: var(--semantic-danger); font-weight: 700;">Sub-10ms Hybrid Retrieval</div>
+              <div style="font-size: 14px; color: var(--semantic-danger); font-weight: 700;">Sub-10ms Hybrid Retrieval</div>
             </div>
           </div>
 
-          <div class="card" style="margin-top: 18px; background: var(--brand-primary-light); padding: 16px 24px; font-size: 20px; color: var(--brand-primary-dark); font-weight: 600;" data-i18n="s9_tip">
+          <div class="card card-body" style="background: var(--brand-primary-light); color: var(--brand-primary-dark); font-weight: 600;" data-i18n="s9_tip">
             ميزة معمارية: استيراد ملف data/eg_drugs.sql داخل Supabase/PostgreSQL يلغي قيود الـ 60 طلب/دقيقة الموجودة في الـ Public API ويوفر بحثاً فورياً غير محدود!
           </div>
         </section>
@@ -956,14 +1252,14 @@
         <!-- SLIDE 10: API REQUEST & RESPONSE 1 -->
         <section class="slide" data-slide="9">
           <div>
-            <div class="slide-kicker" data-i18n="s10_kicker">09 · تفاصيل الـ API (Request &amp; Response — Part 1)</div>
-            <h2 class="slide-title">POST /api/prescription/scan &amp; Alternatives</h2>
+            <div class="slide-kicker" data-i18n="s10_kicker">09 · تفاصيل الـ API (Request & Response — Part 1)</div>
+            <h2 class="slide-title">POST /api/prescription/scan & Alternatives</h2>
           </div>
 
-          <div class="grid-2" style="margin-top: 14px; flex: 1;">
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="font-size: 21px;" data-i18n="s10_req_t">الطلب (Request — Multipart / JSON)</strong>
+          <div class="grid-2" style="flex: 1;">
+            <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <strong style="font-size: 18px;" data-i18n="s10_req_t">الطلب (Request — Multipart / JSON)</strong>
                 <span class="pill pill-blue">Content-Type: multipart/form-data</span>
               </div>
               <pre class="code-block" style="flex: 1;">POST /api/prescription/scan HTTP/1.1
@@ -980,9 +1276,9 @@ Accept-Language: ar
 }</pre>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="font-size: 21px;" data-i18n="s10_res_t">الاستجابة (Response — 200 OK JSON)</strong>
+            <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <strong style="font-size: 18px;" data-i18n="s10_res_t">الاستجابة (Response — 200 OK JSON)</strong>
                 <span class="pill pill-teal">200 OK · 820ms</span>
               </div>
               <pre class="code-block" style="flex: 1;">{
@@ -1015,14 +1311,14 @@ Accept-Language: ar
         <!-- SLIDE 11: API REQUEST & RESPONSE 2 -->
         <section class="slide" data-slide="10">
           <div>
-            <div class="slide-kicker" data-i18n="s11_kicker">10 · تفاصيل الـ API (Request &amp; Response — Part 2)</div>
+            <div class="slide-kicker" data-i18n="s11_kicker">10 · تفاصيل الـ API (Request & Response — Part 2)</div>
             <h2 class="slide-title">POST /api/assistant/chat (RAG + Tool Calling)</h2>
           </div>
 
-          <div class="grid-2" style="margin-top: 14px; flex: 1;">
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="font-size: 21px;" data-i18n="s11_req_t">طلب المحادثة (Chat Request)</strong>
+          <div class="grid-2" style="flex: 1;">
+            <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <strong style="font-size: 18px;" data-i18n="s11_req_t">طلب المحادثة (Chat Request)</strong>
                 <span class="pill pill-blue">POST /api/assistant/chat</span>
               </div>
               <pre class="code-block" style="flex: 1;">{
@@ -1039,9 +1335,9 @@ Accept-Language: ar
 }</pre>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="font-size: 21px;" data-i18n="s11_res_t">استجابة الـ Agent (Grounded + Refusal Code)</strong>
+            <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <strong style="font-size: 18px;" data-i18n="s11_res_t">استجابة الـ Agent (Grounded + Refusal Code)</strong>
                 <span class="pill pill-warn">200 OK / 400 / 429</span>
               </div>
               <pre class="code-block" style="flex: 1;">{
@@ -1062,47 +1358,47 @@ Accept-Language: ar
         <!-- SLIDE 12: TEAM PLAN & INTERACTIVE QUIZ -->
         <section class="slide" data-slide="11">
           <div>
-            <div class="slide-kicker" data-i18n="s12_kicker">11 · خطة تنفيذ الفريق والاختبار السريع (Execution &amp; Check)</div>
+            <div class="slide-kicker" data-i18n="s12_kicker">11 · خطة تنفيذ الفريق والاختبار السريع (Execution & Check)</div>
             <h2 class="slide-title" data-i18n="s12_title">توزيع المهام على الفريق + اختبر فهمك للمعمارية</h2>
           </div>
 
-          <div class="grid-2" style="margin-top: 14px; flex: 1; align-items: stretch;">
+          <div class="grid-2" style="flex: 1; align-items: stretch;">
             <!-- Team Roles -->
-            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
               <h3 class="card-title" data-i18n="s12_roles_h">تقسيم الشغل بينك وبين الشباب (4 أدوار)</h3>
-              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 19px;">
+              <div style="display: flex; flex-direction: column; gap: 10px;" class="card-body">
                 <div style="padding: 12px; background: var(--bg-subtle); border-radius: 10px;">
                   <strong style="color: var(--brand-primary-dark);">1. Frontend Lead (React + Tailwind):</strong>
                   <span data-i18n="s12_r1">بناء الـ Landing Page بالأنيميشن، واجهة مسح الروشتة، وكروت عرض الأدوية والبدائل.</span>
                 </div>
                 <div style="padding: 12px; background: var(--bg-subtle); border-radius: 10px;">
-                  <strong style="color: var(--brand-accent);">2. AI &amp; Vision Engineer:</strong>
+                  <strong style="color: var(--brand-accent);">2. AI & Vision Engineer:</strong>
                   <span data-i18n="s12_r2">برمجة Vision Prompt لاستخراج أدوية الروشتة JSON وبناء شات الـ RAG مع منع الهلوسة.</span>
                 </div>
                 <div style="padding: 12px; background: var(--bg-subtle); border-radius: 10px;">
-                  <strong style="color: var(--semantic-warn);">3. Backend &amp; Database:</strong>
+                  <strong style="color: var(--semantic-warn);">3. Backend & Database:</strong>
                   <span data-i18n="s12_r3">رفع eg_drugs.sql على Supabase، بناء خوارزمية المثائل (active) والبدائل (description)، وربط OpenFDA.</span>
                 </div>
                 <div style="padding: 12px; background: var(--bg-subtle); border-radius: 10px;">
-                  <strong style="color: var(--text-primary);">4. QA, Data &amp; Pitching:</strong>
+                  <strong style="color: var(--text-primary);">4. QA, Data & Pitching:</strong>
                   <span data-i18n="s12_r4">اختبار 15 روشتة حقيقية، تجهيز فيديو Demo احتياطي، وبناء عرض التقديم النهائي للحكام.</span>
                 </div>
               </div>
-              <div style="font-size: 16px; color: var(--text-muted);" data-i18n="s12_src">المصادر: Egyptian Drug Database (mahmoudfalous/eg-drugs · CC-BY-4.0) &amp; OpenFDA Drug Label API</div>
+              <div style="font-size: 14px; color: var(--text-muted);" data-i18n="s12_src">المصادر: Egyptian Drug Database (mahmoudfalous/eg-drugs · CC-BY-4.0) & OpenFDA Drug Label API</div>
             </div>
 
             <!-- Interactive Knowledge Check -->
-            <div class="card" style="border: 2px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card" style="border: 2px solid var(--brand-primary); display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
               <div>
                 <span class="pill pill-teal" data-i18n="s12_q_badge">اختبار سريع للتيم (Interactive Check)</span>
                 <h3 class="card-title" style="margin-top: 10px;" data-i18n="s12_q_text">سؤال: لو دواء Concor 10mg غير متوفر، ما هو الشرط الأساسي لاختيار "مثيل صيدلي مطابق 100%" من قاعدة البيانات؟</h3>
-                <div id="quizOptions" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                <div id="quizOptions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
                   <button class="tab-btn" style="text-align: start;" data-correct="false" data-i18n="s12_opt1">أ) أن يكون له نفس السعر ونفس الشركة المنتجة فقط</button>
                   <button class="tab-btn" style="text-align: start;" data-correct="true" data-i18n="s12_opt2">ب) تطابق حقل active (المادة الفعالة) + نفس التركيز (10mg) + نفس الشكل الصيدلي (أقراص)</button>
                   <button class="tab-btn" style="text-align: start;" data-correct="false" data-i18n="s12_opt3">ج) أن يبدأ بنفس الحرف الأول في الاسم التجاري</button>
                 </div>
               </div>
-              <div id="quizFeedback" style="padding: 14px; border-radius: 12px; background: var(--bg-subtle); font-size: 19px; font-weight: 600;" data-i18n="s12_q_hint">اختر الإجابة الصحيحة للتحقق من منطق محرك البدائل.</div>
+              <div id="quizFeedback" class="card-body" style="padding: 14px; border-radius: 12px; background: var(--bg-subtle); font-weight: 600;" data-i18n="s12_q_hint">اختر الإجابة الصحيحة للتحقق من منطق محرك البدائل.</div>
             </div>
           </div>
         </section>
@@ -1112,7 +1408,7 @@ Accept-Language: ar
       <!-- Footer Navigation -->
       <footer class="footerbar">
         <div class="slide-counter" id="slideCounter">1 / 12</div>
-        <div style="font-size: 17px; color: var(--text-muted);" data-i18n="footer_hint">الاختصارات: الأسهم للتنقل · O نظرة عامة · R إعادة الأنيميشن · F ملء الشاشة · L تغيير اللغة</div>
+        <div class="footer-hint" data-i18n="footer_hint">الاختصارات: الأسهم للتنقل · O نظرة عامة · R إعادة الأنيميشن · F ملء الشاشة · L تغيير اللغة</div>
         <div class="nav-group">
           <button class="nav-btn" id="btnPrev">
             <svg class="flip-rtl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg>
@@ -1127,7 +1423,7 @@ Accept-Language: ar
 
       <!-- Slide Overview Modal -->
       <div id="overviewModal" role="dialog" aria-modal="true" aria-label="Slide Overview">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
           <h2 style="font-size: 32px; font-weight: 800;" data-i18n="ov_title">فهرس شرائح العرض (اختر شريحة للانتقال)</h2>
           <button class="ctrl-btn" id="btnCloseOverview" data-i18n="ov_close">إغلاق (Esc)</button>
         </div>
@@ -1558,11 +1854,15 @@ Accept-Language: ar
     const totalSlides = slides.length;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Responsive 1600x900 Stage Scaling
+    // Responsive 1600x900 Stage Scaling on Desktop (>900px), Native Responsive Flow on Mobile
     function scaleStage() {
       const stage = document.getElementById("stage");
       const vw = window.innerWidth;
       const vh = window.innerHeight;
+      if (vw <= 900) {
+        stage.style.transform = "none";
+        return;
+      }
       const scale = Math.min(vw / 1600, vh / 900);
       stage.style.transform = `scale(${scale})`;
     }
@@ -1599,6 +1899,7 @@ Accept-Language: ar
       currentSlide = index;
       const activeSlide = slides[currentSlide];
       activeSlide.classList.add("active");
+      activeSlide.scrollTop = 0;
 
       document.getElementById("slideCounter").textContent = `${currentSlide + 1} / ${totalSlides}`;
       document.getElementById("progressFill").style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
@@ -1660,7 +1961,7 @@ Accept-Language: ar
         const titleEl = s.querySelector("h1, h2");
         const btn = document.createElement("button");
         btn.className = "overview-item" + (idx === currentSlide ? " current" : "");
-        btn.innerHTML = `<div style="font-size:15px;color:#38BDF8;font-weight:700;margin-bottom:6px;">#${idx + 1}</div><div style="font-size:18px;font-weight:700;line-height:1.35;">${titleEl ? titleEl.textContent : "Slide " + (idx + 1)}</div>`;
+        btn.innerHTML = `<div style="font-size:14px;color:#38BDF8;font-weight:700;margin-bottom:6px;">#${idx + 1}</div><div style="font-size:16px;font-weight:700;line-height:1.35;">${titleEl ? titleEl.textContent : "Slide " + (idx + 1)}</div>`;
         btn.addEventListener("click", () => {
           overviewModal.classList.remove("open");
           goToSlide(idx);
@@ -1704,15 +2005,19 @@ Accept-Language: ar
       }
     });
 
-    // Touch Swipe Support
+    // Touch Swipe Support (ignores vertical scrolling & horizontal code/table scrolls)
     let touchStartX = 0;
+    let touchStartY = 0;
     document.getElementById("stage").addEventListener("touchstart", (e) => {
       touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
     }, { passive: true });
     document.getElementById("stage").addEventListener("touchend", (e) => {
-      const diff = e.changedTouches[0].screenX - touchStartX;
-      if (Math.abs(diff) > 50) {
-        if (diff < 0) goToSlide(currentSlide + 1);
+      if (e.target.closest("pre, .table-wrap")) return;
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const diffY = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+        if (diffX < 0) goToSlide(currentSlide + 1);
         else goToSlide(currentSlide - 1);
       }
     }, { passive: true });
